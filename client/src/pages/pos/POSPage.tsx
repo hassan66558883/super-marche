@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { ArrowLeft, Keyboard, Undo2, PauseCircle, Wallet, ShoppingCart, LayoutGrid, CreditCard, WifiOff, Store } from 'lucide-react';
+import { ArrowLeft, Keyboard, Undo2, PauseCircle, Wallet, ShoppingCart, LayoutGrid, CreditCard, WifiOff, Store, CloudUpload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Kbd } from '@/components/ui/misc';
@@ -19,7 +19,7 @@ import { CheckoutPanel, type CheckoutHandle } from './CheckoutPanel';
 import { CartDiscountDialog, CustomerPickerDialog, HeldSalesDialog, LineEditDialog, NoteDialog, OpenRegisterDialog, SaleSuccessDialog, VariantDialog } from './PosDialogs';
 import { ReturnDialog } from '@/pages/returns/ReturnDialog';
 import { useCartStore } from '@/stores/cart.store';
-import { useCurrentBranch } from '@/stores/auth.store';
+import { useAuthStore, useCurrentBranch } from '@/stores/auth.store';
 import { usePrintStore } from '@/stores/print.store';
 import { analyzePayments, buildSaleInput, newClientRef, useCartPricing } from '@/services/pos.service';
 import { CashApi, HeldSalesApi, PaymentMethodsApi, SalesApi } from '@/services/sales.api';
@@ -30,6 +30,11 @@ import { useHotkeys } from '@/hooks/useHotkeys';
 import { useBarcodeScanner } from '@/hooks/useBarcodeScanner';
 import { usePosLayout } from '@/hooks/useMediaQuery';
 import { useOnline } from '@/hooks/useOnline';
+import { syncCatalog, findLocalByCode, decrementLocalStock, catalogInfo } from '@/offline/catalog';
+import { enqueueSale, isNetworkError, useOfflineStore } from '@/offline/outbox';
+import { withOfflineCache } from '@/offline/cache';
+import { localSaleNumber, provisionalSale } from '@/offline/provisional';
+import { OutboxDialog } from './OutboxDialog';
 import { D } from '@/utils/money';
 import { toastError } from '@/utils/errors';
 import { beep } from '@/utils/beep';
@@ -43,7 +48,12 @@ export default function POSPage() {
   const { t } = useTranslation();
   const qc = useQueryClient();
   const layout = usePosLayout();
-  const online = useOnline();
+  const browserOnline = useOnline();
+  const reachable = useOfflineStore((s) => s.reachable);
+  const queued = useOfflineStore((s) => s.pending + s.failed);
+  const failedCount = useOfflineStore((s) => s.failed);
+  const online = browserOnline && reachable;
+  const user = useAuthStore((s) => s.user);
   const branch = useCurrentBranch();
   const settings = useSettings();
   const cart = useCartStore();
@@ -59,10 +69,22 @@ export default function POSPage() {
   const [variantFor, setVariantFor] = useState<Product | null>(null);
   const [editKey, setEditKey] = useState<string | null>(null);
   const [dialog, setDialog] = useState<null | 'customer' | 'discount' | 'held' | 'note' | 'return' | 'clear' | 'shortcuts'>(null);
-  const [completed, setCompleted] = useState<Sale | null>(null);
+  const [completed, setCompleted] = useState<{ sale: Sale; offline: boolean } | null>(null);
+  const [outboxOpen, setOutboxOpen] = useState(false);
+  const [catalogState, setCatalogState] = useState<{ count: number; syncedAt: string } | null>(null);
 
-  const methods = useQuery({ queryKey: ['payment-methods'], queryFn: PaymentMethodsApi.list, staleTime: 10 * 60_000 });
-  const session = useQuery({ queryKey: ['cash', 'current', branch?.id], queryFn: CashApi.current, enabled: !!branch });
+  const methods = useQuery({ queryKey: ['payment-methods'], queryFn: () => withOfflineCache('payment-methods', PaymentMethodsApi.list), staleTime: 10 * 60_000 });
+  const session = useQuery({ queryKey: ['cash', 'current', branch?.id], queryFn: () => withOfflineCache(`cash-current-${branch?.id}-${user?.id}`, CashApi.current), enabled: !!branch });
+
+  // Local copy of the catalog for offline selling, refreshed every 10 minutes while online
+  useEffect(() => {
+    if (!branch) return;
+    let cancelled = false;
+    const run = () => syncCatalog(branch.id).then((r) => !cancelled && setCatalogState(r)).catch(() => catalogInfo(branch.id).then((r) => !cancelled && setCatalogState(r)));
+    void run();
+    const timer = window.setInterval(() => { if (useOfflineStore.getState().reachable) void run(); }, 10 * 60_000);
+    return () => { cancelled = true; window.clearInterval(timer); };
+  }, [branch]);
   const held = useQuery({ queryKey: ['held-sales'], queryFn: HeldSalesApi.list });
   const requireRegister = settings.data?.pos.requireOpenRegister ?? true;
   const registerMissing = requireRegister && session.isSuccess && !session.data;
@@ -91,23 +113,59 @@ export default function POSPage() {
       const hit = await ProductsApi.byCode(code);
       addProduct(hit.product, hit.variantId);
     } catch (e) {
-      if (e instanceof ApiError && e.status === 404) notFound(code); else toastError(e);
+      if (e instanceof ApiError && e.status === 404) notFound(code);
+      else if (isNetworkError(e) && branch) {
+        const local = await findLocalByCode(branch.id, code);
+        if (local) addProduct(local.product, local.variantId); else notFound(code);
+      } else toastError(e);
     }
   }, { enabled: !completed });
 
   // ── Completing the sale ──
+  /** Methods that work without the server: no credit (limit check) and no live mobile-money provider */
+  const offlineAllowed = (code: string) => {
+    const m = methods.data?.find((x) => x.code === code);
+    return !!m && m.type !== 'CREDIT' && !m.provider;
+  };
+
+  const saveOffline = async (input: ReturnType<typeof buildSaleInput>) => {
+    if (!branch || !user) throw new ApiError(0, 'NETWORK', t('errors.NETWORK'));
+    if (input.payments.some((p) => !offlineAllowed(p.method))) throw new ApiError(0, 'OFFLINE_METHOD', t('pos.offlineMethodNotAllowed'));
+    const now = new Date();
+    const ref = input.clientRef!;
+    const localNumber = localSaleNumber(branch.code, ref, now);
+    const sale = provisionalSale({
+      clientRef: ref, localNumber, lines: cart.lines, pricing, analysis, methods: methods.data ?? [], customer: cart.customer,
+      cashier: { id: user.id, fullName: user.fullName }, branch: { id: branch.id, code: branch.code, name: branch.name }, note: cart.note, createdAt: now,
+    });
+    await enqueueSale({ clientRef: ref, branchId: branch.id, userId: user.id, input: { ...input, offlineCreatedAt: now.toISOString() }, localNumber, total: sale.total, createdAt: now.toISOString() });
+    await decrementLocalStock(branch.id, cart.lines.map((l) => ({ productId: l.productId, variantId: l.variantId, quantity: l.quantity })));
+    return sale;
+  };
+
   const complete = useMutation({
-    mutationFn: () => SalesApi.create(buildSaleInput({
-      clientRef: clientRef.current, lines: cart.lines, customerId: cart.customer?.id ?? null, cartDiscount: cart.cartDiscount, analysis, note: cart.note,
-    })),
-    onSuccess: (sale) => {
-      setCompleted(sale);
+    mutationFn: async (): Promise<{ sale: Sale; offline: boolean }> => {
+      const input = buildSaleInput({
+        clientRef: clientRef.current, lines: cart.lines, customerId: cart.customer?.id ?? null, cartDiscount: cart.cartDiscount, analysis, note: cart.note,
+      });
+      if (!online) return { sale: await saveOffline(input), offline: true };
+      try {
+        return { sale: await SalesApi.create(input), offline: false };
+      } catch (e) {
+        // The request may or may not have reached the server: queue it with the same clientRef, the server dedupes
+        if (isNetworkError(e)) return { sale: await saveOffline(input), offline: true };
+        throw e;
+      }
+    },
+    onSuccess: (res) => {
+      setCompleted(res);
       setDrawer(false);
       cart.clear();
       clientRef.current = newClientRef();
+      if (res.offline) toast.warning(t('pos.offlineQueued'), { id: 'offline-sale' });
       void qc.invalidateQueries({ queryKey: ['pos-products'] });
       void qc.invalidateQueries({ queryKey: ['cash', 'current'] });
-      if (settings.data?.receipt.autoPrint) print('receipt', sale);
+      if (settings.data?.receipt.autoPrint) print('receipt', res.sale);
     },
     onError: (e) => {
       // Business rule errors: a new attempt must be a new request
@@ -116,7 +174,8 @@ export default function POSPage() {
       toastError(e);
     },
   });
-  const disabledReason = registerMissing ? t('pos.openRegisterFirst') : null;
+  const offlineBlocked = !online && analysis.effective.some((p) => p.amount.gt(0) && !offlineAllowed(p.method)) ? t('pos.offlineMethodNotAllowed') : null;
+  const disabledReason = registerMissing ? t('pos.openRegisterFirst') : offlineBlocked;
   const confirm = () => {
     if (!cart.lines.length || complete.isPending) return;
     if (!analysis.canComplete || disabledReason) {
@@ -179,9 +238,21 @@ export default function POSPage() {
           {session.data ? (
             <Badge variant="success" className="hidden sm:inline-flex"><Wallet className="h-3 w-3" /> {session.data.session.register.name}</Badge>
           ) : session.isSuccess && <Badge variant="destructive" className="hidden sm:inline-flex">{t('pos.registerClosed')}</Badge>}
-          {!online && <Badge variant="warning"><WifiOff className="h-3 w-3" /> {t('common.offline')}</Badge>}
+          {!online && (
+            <Tip label={catalogState ? t('pos.offlineCatalog', { count: catalogState.count, date: new Date(catalogState.syncedAt).toLocaleTimeString() }) : t('pos.offlineNoCatalog')}>
+              <Badge variant="warning"><WifiOff className="h-3 w-3" /> {t('common.offline')}</Badge>
+            </Tip>
+          )}
         </div>
         <div className="ms-auto flex items-center gap-1">
+          {queued > 0 && (
+            <Tip label={t('pos.outboxTitle')}>
+              <Button variant="ghost" size="sm" className={cn('relative', failedCount && 'text-destructive')} onClick={() => setOutboxOpen(true)}>
+                <CloudUpload /> <span className="hidden lg:inline">{t('pos.outboxShort')}</span>
+                <span className={cn('absolute -top-0.5 end-0 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-bold text-white', failedCount ? 'bg-destructive' : 'bg-warning')}>{queued}</span>
+              </Button>
+            </Tip>
+          )}
           <Tip label={t('pos.held')} shortcut="F8">
             <Button variant="ghost" size="sm" className="relative" onClick={() => setDialog('held')}>
               <PauseCircle /> <span className="hidden lg:inline">{t('pos.held')}</span>
@@ -250,7 +321,8 @@ export default function POSPage() {
         onConfirm={() => { cart.clear(); setDialog(null); productsRef.current?.focusSearch(); }} />
       <ShortcutsDialog open={dialog === 'shortcuts'} onClose={() => setDialog(null)} />
       <OpenRegisterDialog open={registerMissing} onOpened={() => void session.refetch()} />
-      <SaleSuccessDialog sale={completed} onNew={() => { setCompleted(null); setMobilePanel('products'); window.setTimeout(() => productsRef.current?.focusSearch(), 50); }} />
+      <OutboxDialog open={outboxOpen} onClose={() => setOutboxOpen(false)} />
+      <SaleSuccessDialog sale={completed?.sale ?? null} offline={completed?.offline} onNew={() => { setCompleted(null); setMobilePanel('products'); window.setTimeout(() => productsRef.current?.focusSearch(), 50); }} />
     </div>
   );
 }

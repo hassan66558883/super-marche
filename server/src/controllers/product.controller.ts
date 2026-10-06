@@ -16,6 +16,10 @@ export const ProductController = {
     const { items, total, exact } = await ProductService.posSearch(req, q);
     return ok(res, items, { ...pageMeta(q.page, q.pageSize, total), exact });
   },
+  async posCatalog(req: Request, res: Response) {
+    res.setHeader('Cache-Control', 'private, no-store');
+    return ok(res, { syncedAt: new Date().toISOString(), items: await ProductService.posCatalog(req) });
+  },
   async byCode(req: Request, res: Response) {
     const hit = await ProductService.findByCode(req, String(req.params.code).trim());
     if (!hit) throw notFound('PRODUCT_NOT_FOUND', 'Produit introuvable');

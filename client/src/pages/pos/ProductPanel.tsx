@@ -13,6 +13,10 @@ import { localizedName } from '@/i18n';
 import { D, formatQty } from '@/utils/money';
 import { cn } from '@/utils/cn';
 import type { Product } from '@/types/catalog';
+import { useAuthStore } from '@/stores/auth.store';
+import { searchLocal } from '@/offline/catalog';
+import { isNetworkError, useOfflineStore } from '@/offline/outbox';
+import { withOfflineCache } from '@/offline/cache';
 
 export interface ProductPanelHandle {
   focusSearch: () => void;
@@ -34,10 +38,12 @@ export const ProductPanel = forwardRef<ProductPanelHandle, {
   const debounced = useDebounce(query.trim(), 200);
   useImperativeHandle(ref, () => ({ focusSearch: () => { inputRef.current?.focus(); inputRef.current?.select(); } }));
 
-  const categories = useQuery({ queryKey: ['categories'], queryFn: () => CategoriesApi.list(), staleTime: 5 * 60_000 });
+  const categories = useQuery({ queryKey: ['categories'], queryFn: () => withOfflineCache('categories', () => CategoriesApi.list()), staleTime: 5 * 60_000 });
+  const branchId = useAuthStore((s) => s.branchId);
+  const reachable = useOfflineStore((s) => s.reachable);
   const products = useQuery({
-    queryKey: ['pos-products', debounced, category],
-    queryFn: ({ signal }) => ProductsApi.pos({
+    queryKey: ['pos-products', debounced, category, reachable],
+    queryFn: ({ signal }) => posSearch(branchId, reachable, {
       q: debounced || undefined, pageSize: 60,
       categoryId: !debounced && category && category !== QUICK ? category : undefined,
       quick: !debounced && category === QUICK ? 'true' : undefined,
@@ -62,7 +68,7 @@ export const ProductPanel = forwardRef<ProductPanelHandle, {
     // Scanner / typed code: the server tries an exact barcode or SKU match first
     busy.current = true;
     try {
-      const res = await ProductsApi.pos({ q, pageSize: 2 });
+      const res = await posSearch(branchId, reachable, { q, pageSize: 2 });
       const exact = res.meta.exact as { productId: string; variantId: string | null } | undefined;
       if (exact) { onPick(res.items[0], exact.variantId); setQuery(''); }
       else if (res.items.length === 1) { onPick(res.items[0]); setQuery(''); }
@@ -185,4 +191,21 @@ function ProductCard({ p, active, onClick }: { p: Product; active: boolean; onCl
       </div>
     </button>
   );
+}
+
+type PosQuery = { q?: string; categoryId?: string; quick?: string; pageSize?: number };
+
+/** Server search, or the local catalog copy when the server cannot be reached. */
+async function posSearch(branchId: string | null, reachable: boolean, q: PosQuery, signal?: AbortSignal) {
+  const local = async () => {
+    const r = await searchLocal(branchId ?? '', { q: q.q, categoryId: q.categoryId, quick: q.quick === 'true', pageSize: q.pageSize });
+    return { items: r.items, meta: { page: 1, pageSize: q.pageSize ?? 60, total: r.total, totalPages: 1, exact: r.exact ?? undefined } };
+  };
+  if (!reachable && branchId) return local();
+  try {
+    return await ProductsApi.pos(q, signal);
+  } catch (e) {
+    if (isNetworkError(e) && branchId) return local();
+    throw e;
+  }
 }

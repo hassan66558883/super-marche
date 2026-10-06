@@ -147,6 +147,43 @@ describe('Sales', () => {
   });
 });
 
+describe('Offline sales sync', () => {
+  it('serves the full branch catalog for the offline POS, without costs for cashiers', async () => {
+    const res = await cashier.get('/api/products/pos/catalog');
+    expect(res.status).toBe(200);
+    expect(res.body.data.items.length).toBeGreaterThan(20);
+    expect(res.body.data.syncedAt).toBeTruthy();
+    expect(JSON.stringify(res.body.data.items)).not.toMatch(/purchasePrice/);
+  });
+
+  it('records a sale rung up offline even if stock went negative meanwhile, once only', async () => {
+    await ensureOpenRegister(cashier);
+    await setStock('BOI-001', 1);
+    const body = {
+      clientRef: `offline-${Date.now()}`, offlineCreatedAt: new Date(Date.now() - 20 * 60_000).toISOString(),
+      items: [{ productId: await productId('BOI-001'), quantity: 3 }], payments: [{ method: 'CASH', amount: 100000 }],
+    };
+    const res = await cashier.post('/api/sales', body);
+    expect(res.status).toBe(201);
+    expect(await stockOf('BOI-001')).toBe(-2);
+    expect(res.body.data.offlineCreatedAt).toBe(body.offlineCreatedAt);
+    const again = await cashier.post('/api/sales', body);
+    expect(again.body.data.id).toBe(res.body.data.id);
+    expect(await prisma.sale.count({ where: { clientRef: body.clientRef } })).toBe(1);
+    await setStock('BOI-001', 200);
+  });
+
+  it('refuses offline credit and implausible offline dates', async () => {
+    const item = [{ productId: await productId('BOI-001'), quantity: 1 }];
+    const old = await cashier.post('/api/sales', { offlineCreatedAt: new Date(Date.now() - 10 * 86_400_000).toISOString(), items: item, payments: [{ method: 'CASH', amount: 100000 }] });
+    expect(old.body.code).toBe('OFFLINE_DATE_INVALID');
+    const future = await cashier.post('/api/sales', { offlineCreatedAt: new Date(Date.now() + 86_400_000).toISOString(), items: item, payments: [{ method: 'CASH', amount: 100000 }] });
+    expect(future.body.code).toBe('OFFLINE_DATE_INVALID');
+    const credit = await manager.post('/api/sales', { offlineCreatedAt: new Date().toISOString(), items: item, payments: [{ method: 'CREDIT', amount: 0 }] });
+    expect(credit.body.code).toBe('OFFLINE_CREDIT');
+  });
+});
+
 describe('Credit sales and customer payments', () => {
   let customerId: string;
   beforeAll(async () => {

@@ -42,6 +42,12 @@ export const SaleService = {
     }
 
     const posSettings = await SettingsService.get<PosSettings>('pos', branchId);
+    const offline = !!input.offlineCreatedAt;
+    if (offline) {
+      const at = new Date(input.offlineCreatedAt!).getTime();
+      if (!(at <= Date.now() + 5 * 60_000 && at >= Date.now() - 7 * 86_400_000)) throw badRequest('OFFLINE_DATE_INVALID', 'Date de vente hors ligne invalide');
+      if (input.payments.some((p) => p.method === 'CREDIT')) throw badRequest('OFFLINE_CREDIT', 'Les ventes à crédit ne sont pas possibles hors ligne');
+    }
     const branchTax = await branchDefaultTax(branchId);
 
     // ── Load catalog data ──
@@ -219,7 +225,8 @@ export const SaleService = {
         await InventoryService.move(tx, {
           branchId, productId: l.product.id, variantId: l.variant?.id ?? null, quantity: D(l.item.quantity).neg(), type: 'SALE',
           userId: auth.userId, unitCost: l.unitCost, referenceType: 'SALE', referenceId: created.id, reference: invoiceNumber,
-          allowNegative: posSettings.allowNegativeStock, productName: l.product.name,
+          // A sale rung up offline already happened: record it even if stock goes negative
+          allowNegative: posSettings.allowNegativeStock || offline, productName: l.product.name,
         });
       }
 

@@ -77,6 +77,12 @@ export const ProductService = {
     return { items: await views(req, items), total, exact: null };
   },
 
+  /** Full active catalog of the branch (prices, stock, barcodes) cached by the POS for offline selling */
+  async posCatalog(req: Request) {
+    const items = await prisma.product.findMany({ where: { status: 'ACTIVE' }, include: productInclude(req.branchId!), orderBy: [{ isQuick: 'desc' }, { name: 'asc' }], take: 20_000 });
+    return views(req, items);
+  },
+
   /** Exact lookup by barcode (product or variant) or SKU — used by the barcode scanner */
   async findByCode(req: Request, code: string) {
     const bc = await prisma.productBarcode.findUnique({ where: { barcode: code }, select: { productId: true, variantId: true } });

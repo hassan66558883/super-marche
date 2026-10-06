@@ -9,6 +9,7 @@ export const productRoutes = Router();
 productRoutes.use(authenticate, resolveBranch);
 productRoutes.get('/', requirePermission('products.view'), P.list);
 productRoutes.get('/pos', requirePermission('sales.create'), P.posSearch);
+productRoutes.get('/pos/catalog', requirePermission('sales.create'), P.posCatalog);
 productRoutes.get('/code/:code', requirePermission('products.view'), P.byCode);
 productRoutes.get('/generate-barcode', requirePermission('products.create'), P.generateBarcode);
 productRoutes.get('/next-sku', requirePermission('products.create'), P.nextSku);

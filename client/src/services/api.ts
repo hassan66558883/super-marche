@@ -74,6 +74,10 @@ interface RequestOptions {
   signal?: AbortSignal;
 }
 
+/** Notified after every request: false when the server could not be reached at all. */
+export const networkListeners = new Set<(reachable: boolean) => void>();
+const notifyNetwork = (ok: boolean) => networkListeners.forEach((fn) => fn(ok));
+
 async function doFetch(path: string, opts: RequestOptions): Promise<Response> {
   const headers: Record<string, string> = { Accept: 'application/json', ...(opts.headers ?? {}) };
   if (opts.body !== undefined) headers['Content-Type'] = 'application/json';
@@ -82,15 +86,19 @@ async function doFetch(path: string, opts: RequestOptions): Promise<Response> {
   const branch = provider.getBranchId();
   if (branch && !headers['X-Branch-Id']) headers['X-Branch-Id'] = branch;
   try {
-    return await fetch(BASE + path + buildQuery(opts.query), {
+    const res = await fetch(BASE + path + buildQuery(opts.query), {
       method: opts.method ?? 'GET',
       headers,
       body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
       credentials: 'include',
       signal: opts.signal,
     });
+    // A reverse proxy answering 502/503/504 means the API itself is down
+    notifyNetwork(res.status < 502 || res.status > 504);
+    return res;
   } catch (err) {
     if ((err as Error).name === 'AbortError') throw err;
+    notifyNetwork(false);
     throw new ApiError(0, 'NETWORK', 'Connexion au serveur impossible');
   }
 }

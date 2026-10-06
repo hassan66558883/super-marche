@@ -10,6 +10,7 @@ import { useAuthStore } from '@/stores/auth.store';
 import { useUiStore, applyTheme } from '@/stores/ui.store';
 import { ApiError } from '@/services/api';
 import { PrintHost } from '@/components/print/PrintHost';
+import { useOfflineSync } from '@/offline/useOfflineSync';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,13 +18,18 @@ export const queryClient = new QueryClient({
       staleTime: 30_000,
       refetchOnWindowFocus: false,
       retry: (count, err) => !(err instanceof ApiError && err.status >= 400 && err.status < 500) && count < 2,
+      // Run once even when the browser says offline: POS reads fall back to the local catalog
+      networkMode: 'offlineFirst',
     },
+    // Never park a mutation silently: offline it fails (or the POS queues the sale) right away
+    mutations: { networkMode: 'always' },
   },
 });
 
 export default function App() {
   const { i18n } = useTranslation();
   const theme = useUiStore((s) => s.theme);
+  useOfflineSync();
 
   // Restore the session from the httpOnly refresh cookie on first load
   useEffect(() => {

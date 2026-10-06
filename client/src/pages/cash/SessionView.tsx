@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { ArrowDownCircle, ArrowUpCircle, Lock, Printer, Receipt, HandCoins, Calculator } from 'lucide-react';
+import { ArrowDownCircle, ArrowUpCircle, Lock, Printer, Receipt, HandCoins, Calculator, CloudUpload } from 'lucide-react';
 import { Money } from '@/components/shared/Money';
 import { FormField } from '@/components/shared/FormField';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,6 +18,7 @@ import { useAuthStore, useCan } from '@/stores/auth.store';
 import { D, formatMoney, formatNumber, parseAmount } from '@/utils/money';
 import { formatDateTime, formatTime } from '@/utils/format';
 import { toastError } from '@/utils/errors';
+import { flushOutbox, pendingForBranch, useOfflineStore } from '@/offline/outbox';
 import { cn } from '@/utils/cn';
 import type { CashMovement, CashSummary } from '@/types/sales';
 import { ExpenseFormDialog } from '@/pages/expenses/ExpenseFormDialog';
@@ -180,6 +181,10 @@ function CloseRegisterDialog({ summary, onClose, onDone }: { summary: CashSummar
     setCounted(DENOMINATIONS.reduce((a, d) => a.plus(D(next[d] || 0).mul(d)), D(0)).toFixed());
   };
   const needsNote = diff !== null && !diff.isZero();
+  // Offline sales of this branch not yet on the server would be missing from the expected cash
+  const queued = useOfflineStore((st) => st.pending);
+  const [branchQueued, setBranchQueued] = useState(0);
+  useEffect(() => { void pendingForBranch(summary.session.branchId).then(setBranchQueued); }, [summary.session.branchId, queued]);
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-lg">
@@ -187,7 +192,14 @@ function CloseRegisterDialog({ summary, onClose, onDone }: { summary: CashSummar
           <DialogTitle>{t('cash.closeRegister')} — {summary.session.register.name}</DialogTitle>
           <DialogDescription>{t('cash.closeHelp')}</DialogDescription>
         </DialogHeader>
-        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); if (counted !== '' && (!needsNote || note.trim().length >= 3)) close.mutate(); }}>
+        {branchQueued > 0 && (
+          <div className="flex items-start gap-2 rounded-lg border border-warning/40 bg-warning/10 p-3 text-sm" role="alert">
+            <CloudUpload className="mt-0.5 h-4 w-4 shrink-0 text-warning" />
+            <div className="flex-1">{t('cash.offlinePending', { count: branchQueued })}</div>
+            <Button size="sm" variant="outline" onClick={() => void flushOutbox()}>{t('pos.outboxSync')}</Button>
+          </div>
+        )}
+        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); if (counted !== '' && (!needsNote || note.trim().length >= 3) && !branchQueued) close.mutate(); }}>
           <div className="grid grid-cols-2 gap-3">
             <div className="rounded-lg bg-muted/60 p-3"><div className="text-xs text-muted-foreground">{t('cash.expected')}</div><div className="text-xl font-bold tabular">{formatMoney(summary.expected)}</div></div>
             <FormField label={t('cash.counted')} htmlFor="close-counted" required>
@@ -218,7 +230,7 @@ function CloseRegisterDialog({ summary, onClose, onDone }: { summary: CashSummar
           <p className="text-xs text-muted-foreground">{t('cash.openedAt')} {formatDateTime(summary.session.openedAt)} · {summary.session.openedBy.fullName}</p>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>{t('common.cancel')}</Button>
-            <Button type="submit" variant="destructive" disabled={counted === '' || (needsNote && note.trim().length < 3)} loading={close.isPending}><Lock /> {t('cash.closeAndPrint')}</Button>
+            <Button type="submit" variant="destructive" disabled={counted === '' || (needsNote && note.trim().length < 3) || branchQueued > 0} loading={close.isPending}><Lock /> {t('cash.closeAndPrint')}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

@@ -1,9 +1,27 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+import type { Plugin } from 'vite';
+
+/** Emits sw.js with the list of built files so the whole app (all lazy pages) works offline. */
+function serviceWorker(): Plugin {
+  return {
+    name: 'technova-sw',
+    apply: 'build',
+    generateBundle(_opts, bundle) {
+      const assets = Object.keys(bundle).filter((f) => !f.endsWith('.map') && f !== 'index.html').map((f) => `/${f}`);
+      const version = crypto.createHash('sha256').update(assets.sort().join()).digest('hex').slice(0, 12);
+      const source = fs.readFileSync(path.resolve(__dirname, 'sw-template.js'), 'utf8')
+        .replace('__VERSION__', version).replace('__ASSETS__', JSON.stringify(assets));
+      this.emitFile({ type: 'asset', fileName: 'sw.js', source });
+    },
+  };
+}
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), serviceWorker()],
   resolve: { alias: { '@': path.resolve(__dirname, 'src') } },
   server: {
     port: 5173,

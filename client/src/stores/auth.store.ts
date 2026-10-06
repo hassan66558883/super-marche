@@ -7,7 +7,10 @@ interface AuthState {
   user: CurrentUser | null;
   branchId: string | null;
   status: 'unknown' | 'authenticated' | 'anonymous';
+  /** Signed in from the cached profile while the server is unreachable (no access token yet) */
+  offline: boolean;
   setSession: (token: string, user: CurrentUser) => void;
+  setOfflineSession: (user: CurrentUser) => void;
   setUser: (user: CurrentUser) => void;
   setBranch: (branchId: string) => void;
   clear: () => void;
@@ -25,14 +28,20 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       branchId: null,
       status: 'unknown',
+      offline: false,
       setSession: (accessToken, user) => {
         const current = get().branchId;
         const valid = current && user.branches.some((b) => b.id === current);
-        set({ accessToken, user, status: 'authenticated', branchId: valid ? current : user.defaultBranchId ?? user.branches[0]?.id ?? null });
+        set({ accessToken, user, status: 'authenticated', offline: false, branchId: valid ? current : user.defaultBranchId ?? user.branches[0]?.id ?? null });
+      },
+      setOfflineSession: (user) => {
+        const current = get().branchId;
+        const valid = current && user.branches.some((b) => b.id === current);
+        set({ accessToken: null, user, status: 'authenticated', offline: true, branchId: valid ? current : user.defaultBranchId ?? user.branches[0]?.id ?? null });
       },
       setUser: (user) => set({ user }),
       setBranch: (branchId) => set({ branchId }),
-      clear: () => set({ accessToken: null, user: null, status: 'anonymous' }),
+      clear: () => set({ accessToken: null, user: null, status: 'anonymous', offline: false }),
       can: (permission) => Boolean(get().user?.permissions.includes(permission)),
     }),
     { name: 'technova-auth', partialize: (s) => ({ branchId: s.branchId }) },

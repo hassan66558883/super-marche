@@ -3,6 +3,7 @@ import { authenticate, requirePermission, resolveBranch } from '../middleware/au
 import { SettingsController } from '../controllers/settings.controller.js';
 import { NotificationService } from '../services/notification.service.js';
 import { ok } from '../utils/http.js';
+import { prisma } from '../utils/prisma.js';
 
 export const settingsRoutes = Router();
 settingsRoutes.use(authenticate, resolveBranch);
@@ -21,4 +22,11 @@ notificationRoutes.post('/read-all', async (req, res) => {
 notificationRoutes.post('/:id/read', async (req, res) => {
   await NotificationService.markRead([req.branchId!], String(req.params.id));
   ok(res, { ok: true });
+});
+
+/** Active branches (id, code, name) — e.g. transfer destinations. Full branch admin lives under settings. */
+export const branchRoutes = Router();
+branchRoutes.use(authenticate);
+branchRoutes.get('/', async (_req, res) => {
+  ok(res, await prisma.branch.findMany({ where: { status: 'ACTIVE' }, select: { id: true, code: true, name: true, city: true }, orderBy: { name: 'asc' } }));
 });

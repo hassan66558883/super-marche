@@ -115,6 +115,7 @@ const ar: Translation = {
     overLimit: 'تجاوز السقف',
   },
   inventory: {
+    subtitle: "مستويات المخزون والتعديلات وسجل الحركات", skus: "الأصناف", costValue: "القيمة بسعر التكلفة", retailValue: "القيمة بسعر البيع", untracked: "غير متتبع", reasonHint: "مثال: جرد دوري، منتج منتهي الصلاحية…",
     title: 'المخزون', current: 'المخزون الحالي', reserved: 'محجوز', available: 'متاح', min: 'الأدنى', max: 'الأقصى', value: 'قيمة المخزون',
     adjust: 'تسوية المخزون', adjustment: 'تسوية', newQuantity: 'الكمية الجديدة', delta: 'التغيير', movements: 'الحركات',
     movementType: 'نوع الحركة', balanceAfter: 'الرصيد بعد', mvPURCHASE: 'شراء', mvSALE: 'بيع', mvRETURN: 'إرجاع', mvADJUSTMENT: 'تسوية',
@@ -123,16 +124,19 @@ const ar: Translation = {
     outOnly: 'النافد فقط', adjusted: 'تمت تسوية المخزون', stockStatus: 'الحالة',
   },
   transfers: {
+    addProduct: "أضف منتجًا (الاسم أو الرمز أو الباركود)…", noLines: "لا توجد أصناف. ابحث عن منتج أو امسحه لإضافته.", saveDraft: "حفظ كمسودة", approved: "تمت الموافقة على التحويل", shipped: "تم شحن التحويل: خرج المخزون من الفرع", cancelled: "تم إلغاء التحويل", sourceStock: "مخزون المصدر", sent: "الكمية المرسلة", shortWarning: "المخزون غير كافٍ في المصدر لبعض الأسطر: سيُرفض الشحن.", timeline: "المتابعة", approveTitle: "الموافقة على هذا التحويل؟", shipTitle: "شحن هذا التحويل؟", shipHelp: "سيُسحب مخزون جميع الأسطر من هذا الفرع.", cancelTitle: "إلغاء هذا التحويل؟", cancelConfirm: "إلغاء التحويل", receivedDone: "تم استلام التحويل: أضيف المخزون", receiveTitle: "استلام", receiveHelp: "أدخل الكميات المستلمة فعليًا. تُسجَّل الفروقات في سجل التدقيق.", gapWarning: "الكميات المستلمة تختلف عن المرسلة: يرجى ذكر السبب.", overReceived: "كمية مستلمة تتجاوز الكمية المرسلة.", gapNoteHint: "مثال: كرتونة تالفة أثناء النقل", confirmReceipt: "تأكيد الاستلام", created: "تم إنشاء التحويل {{number}}", edit: "تعديل التحويل", overStockWarning: "بعض الكميات تتجاوز المخزون المتوفر هنا.", chooseBranch: "اختر الفرع", outgoing: "صادر", incoming: "وارد", empty: "لا توجد تحويلات",
     title: 'التحويلات', new: 'تحويل جديد', from: 'من', to: 'إلى', number: 'رقم التحويل', statusDRAFT: 'مسودة', statusREQUESTED: 'مطلوب',
     statusAPPROVED: 'موافق عليه', statusIN_TRANSIT: 'قيد النقل', statusRECEIVED: 'مستلم', statusCANCELLED: 'ملغى', request: 'طلب',
     ship: 'شحن', received: 'الكمية المستلمة', workflow: 'يخرج المخزون من الفرع المصدر عند الشحن ويدخل الفرع الوجهة عند الاستلام.',
   },
   purchases: {
+    subtitle: "أوامر الشراء من الموردين واستلام البضائع", empty: "لا توجد أوامر شراء", submitted: "تم إرسال أمر الشراء", approved: "تمت الموافقة على أمر الشراء", cancelled: "تم إلغاء أمر الشراء", selfApproval: "لا يمكنك الموافقة على طلبك الخاص.", receivedQty: "المستلم", createdBy: "أنشأه", approveTitle: "الموافقة على أمر الشراء هذا؟", cancelTitle: "إلغاء أمر الشراء هذا؟", cancelConfirm: "إلغاء الطلب", receivedFull: "تم استلام الطلب بالكامل", receivedPartial: "تم تسجيل استلام جزئي", receiveTitle: "استلام", receiveHelp: "أدخل الكميات المسلَّمة. يُحدَّث المخزون ورصيد المورد.", remaining: "المتبقي", overReceive: "كمية تتجاوز المتبقي للاستلام.", updateCostHelp: "تصبح تكلفة الوحدة في الطلب سعر الشراء الجديد للمنتج.", deliveryNoteHint: "رقم إذن التسليم، ملاحظات…", receiptValue: "القيمة المستلمة", confirmReceipt: "تأكيد الاستلام", created: "تم إنشاء أمر الشراء {{number}}", edit: "تعديل أمر الشراء", chooseSupplier: "اختر موردًا",
     title: 'المشتريات', new: 'أمر شراء جديد', number: 'رقم الأمر', supplier: 'المورد', statusDRAFT: 'مسودة', statusPENDING: 'قيد الانتظار',
     statusAPPROVED: 'موافق عليه', statusRECEIVED: 'مستلم', statusCANCELLED: 'ملغى', unitCost: 'تكلفة الوحدة', submit: 'إرسال للموافقة',
     receiveAll: 'استلام الكل', receiveQty: 'الكمية المستلمة', expectedAt: 'التسليم المتوقع', updateCost: 'تحديث سعر الشراء',
   },
   suppliers: {
+    subtitle: "الموردون والطلبات والحسابات", withBalance: "برصيد مستحق", purchasesTotal: "إجمالي المشتريات", openOrders: "طلبات جارية", orders: "الطلبات", amountTooHigh: "المبلغ يتجاوز الرصيد المستحق", fromRegister: "الدفع من صندوقي", fromRegisterHelp: "تُسحب النقود من صندوقك المفتوح", referenceHint: "رقم التحويل أو الإيصال…", invalidEmail: "بريد إلكتروني غير صالح", termsHint: "مثال: 30 يومًا نهاية الشهر", entryPURCHASE: "شراء", entryPAYMENT: "دفعة", entryADJUSTMENT: "تسوية", entryREFUND: "استرداد", entrySALE: "بيع",
     title: 'الموردون', new: 'مورد جديد', edit: 'تعديل المورد', company: 'الشركة', paymentTerms: 'شروط الدفع',
     balance: 'الرصيد المستحق', account: 'حساب المورد', recordPayment: 'تسجيل دفعة', paymentRecorded: 'تم تسجيل الدفعة',
   },

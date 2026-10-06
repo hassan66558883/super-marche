@@ -16,6 +16,15 @@ const CategoriesPage = lazy(() => import('@/pages/products/CategoriesPage'));
 const CustomersPage = lazy(() => import('@/pages/customers/CustomersPage'));
 const CustomerDetailPage = lazy(() => import('@/pages/customers/CustomerDetailPage'));
 const POSPage = lazy(() => import('@/pages/pos/POSPage'));
+const InventoryPage = lazy(() => import('@/pages/inventory/InventoryPage'));
+const TransfersPage = lazy(() => import('@/pages/transfers/TransfersPage'));
+const TransferFormPage = lazy(() => import('@/pages/transfers/TransferFormPage'));
+const TransferDetailPage = lazy(() => import('@/pages/transfers/TransferDetailPage'));
+const PurchasesPage = lazy(() => import('@/pages/purchases/PurchasesPage'));
+const PurchaseFormPage = lazy(() => import('@/pages/purchases/PurchaseFormPage'));
+const PurchaseDetailPage = lazy(() => import('@/pages/purchases/PurchaseDetailPage'));
+const SuppliersPage = lazy(() => import('@/pages/suppliers/SuppliersPage'));
+const SupplierDetailPage = lazy(() => import('@/pages/suppliers/SupplierDetailPage'));
 
 const page = (el: ReactNode, permission?: string, anyOf?: string[]) => (
   <ErrorBoundary>
@@ -45,6 +54,17 @@ export const router = createBrowserRouter([
           { path: 'categories', element: page(<CategoriesPage />, 'categories.manage') },
           { path: 'customers', element: page(<CustomersPage />, 'customers.view') },
           { path: 'customers/:id', element: page(<CustomerDetailPage />, 'customers.view') },
+          { path: 'inventory', element: page(<InventoryPage />, 'inventory.view') },
+          { path: 'transfers', element: page(<TransfersPage />, 'transfers.view') },
+          { path: 'transfers/new', element: page(<TransferFormPage />, 'transfers.create') },
+          { path: 'transfers/:id', element: page(<TransferDetailPage />, 'transfers.view') },
+          { path: 'transfers/:id/edit', element: page(<TransferFormPage />, 'transfers.create') },
+          { path: 'purchases', element: page(<PurchasesPage />, 'purchases.view') },
+          { path: 'purchases/new', element: page(<PurchaseFormPage />, 'purchases.create') },
+          { path: 'purchases/:id', element: page(<PurchaseDetailPage />, 'purchases.view') },
+          { path: 'purchases/:id/edit', element: page(<PurchaseFormPage />, 'purchases.create') },
+          { path: 'suppliers', element: page(<SuppliersPage />, 'suppliers.view') },
+          { path: 'suppliers/:id', element: page(<SupplierDetailPage />, 'suppliers.view') },
           { path: '*', element: page(<NotFoundPage />) },
         ],
       },

@@ -114,6 +114,7 @@ const fr = {
     overLimit: 'Plafond dépassé',
   },
   inventory: {
+    subtitle: "Niveaux de stock, ajustements et historique des mouvements", skus: "Articles", costValue: "Valeur au coût", retailValue: "Valeur de vente", untracked: "Non suivi", reasonHint: "Ex. : inventaire tournant, produit périmé…",
     title: 'Stock', current: 'Stock actuel', reserved: 'Réservé', available: 'Disponible', min: 'Min', max: 'Max', value: 'Valeur du stock',
     adjust: 'Ajuster le stock', adjustment: 'Ajustement', newQuantity: 'Nouvelle quantité', delta: 'Variation', movements: 'Mouvements',
     movementType: 'Type de mouvement', balanceAfter: 'Solde après', mvPURCHASE: 'Achat', mvSALE: 'Vente', mvRETURN: 'Retour', mvADJUSTMENT: 'Ajustement',
@@ -122,16 +123,19 @@ const fr = {
     outOnly: 'Ruptures uniquement', adjusted: 'Stock ajusté', stockStatus: 'État',
   },
   transfers: {
+    addProduct: "Ajouter un produit (nom, SKU ou code-barres)…", noLines: "Aucun article. Recherchez ou scannez un produit pour l’ajouter.", saveDraft: "Enregistrer le brouillon", approved: "Transfert approuvé", shipped: "Transfert expédié : le stock a quitté la succursale", cancelled: "Transfert annulé", sourceStock: "Stock source", sent: "Qté envoyée", shortWarning: "Stock insuffisant à la source pour certaines lignes : l’expédition sera refusée.", timeline: "Suivi", approveTitle: "Approuver ce transfert ?", shipTitle: "Expédier ce transfert ?", shipHelp: "Le stock de toutes les lignes sera retiré de cette succursale.", cancelTitle: "Annuler ce transfert ?", cancelConfirm: "Annuler le transfert", receivedDone: "Transfert réceptionné : le stock a été ajouté", receiveTitle: "Réceptionner", receiveHelp: "Saisissez les quantités réellement reçues. Les écarts sont enregistrés dans le journal d’audit.", gapWarning: "Les quantités reçues diffèrent des quantités envoyées : indiquez la raison.", overReceived: "Une quantité reçue dépasse la quantité envoyée.", gapNoteHint: "Ex. : 1 carton abîmé pendant le transport", confirmReceipt: "Confirmer la réception", created: "Transfert {{number}} créé", edit: "Modifier le transfert", overStockWarning: "Certaines quantités dépassent le stock disponible ici.", chooseBranch: "Choisir la succursale", outgoing: "Sortant", incoming: "Entrant", empty: "Aucun transfert",
     title: 'Transferts', new: 'Nouveau transfert', from: 'Depuis', to: 'Vers', number: 'N° transfert', statusDRAFT: 'Brouillon', statusREQUESTED: 'Demandé',
     statusAPPROVED: 'Approuvé', statusIN_TRANSIT: 'En transit', statusRECEIVED: 'Reçu', statusCANCELLED: 'Annulé', request: 'Demander',
     ship: 'Expédier', received: 'Qté reçue', workflow: 'Le stock sort de la succursale d’origine à l’expédition et entre à la réception.',
   },
   purchases: {
+    subtitle: "Bons de commande fournisseurs et réceptions de marchandises", empty: "Aucun bon de commande", submitted: "Bon de commande soumis", approved: "Bon de commande approuvé", cancelled: "Bon de commande annulé", selfApproval: "Vous ne pouvez pas approuver votre propre commande.", receivedQty: "Reçu", createdBy: "Créé par", approveTitle: "Approuver ce bon de commande ?", cancelTitle: "Annuler ce bon de commande ?", cancelConfirm: "Annuler la commande", receivedFull: "Commande entièrement réceptionnée", receivedPartial: "Réception partielle enregistrée", receiveTitle: "Réceptionner", receiveHelp: "Saisissez les quantités livrées. Le stock et le solde fournisseur sont mis à jour.", remaining: "Reste", overReceive: "Une quantité dépasse le reste à recevoir.", updateCostHelp: "Le coût unitaire de la commande devient le nouveau prix d’achat du produit.", deliveryNoteHint: "N° de bon de livraison, remarques…", receiptValue: "Valeur reçue", confirmReceipt: "Confirmer la réception", created: "Bon de commande {{number}} créé", edit: "Modifier le bon de commande", chooseSupplier: "Choisir un fournisseur",
     title: 'Achats', new: 'Nouveau bon de commande', number: 'N° commande', supplier: 'Fournisseur', statusDRAFT: 'Brouillon', statusPENDING: 'En attente',
     statusAPPROVED: 'Approuvé', statusRECEIVED: 'Reçu', statusCANCELLED: 'Annulé', unitCost: 'Coût unitaire', submit: 'Soumettre pour approbation',
     receiveAll: 'Tout réceptionner', receiveQty: 'Qté à réceptionner', expectedAt: 'Livraison prévue', updateCost: 'Mettre à jour le prix d’achat',
   },
   suppliers: {
+    subtitle: "Fournisseurs, commandes et comptes", withBalance: "Avec solde dû", purchasesTotal: "Total des achats", openOrders: "Commandes en cours", orders: "Commandes", amountTooHigh: "Montant supérieur au solde dû", fromRegister: "Payer depuis ma caisse", fromRegisterHelp: "Les espèces sortent de votre caisse ouverte", referenceHint: "N° de virement, de reçu…", invalidEmail: "E-mail invalide", termsHint: "Ex. : 30 jours fin de mois", entryPURCHASE: "Achat", entryPAYMENT: "Paiement", entryADJUSTMENT: "Ajustement", entryREFUND: "Remboursement", entrySALE: "Vente",
     title: 'Fournisseurs', new: 'Nouveau fournisseur', edit: 'Modifier le fournisseur', company: 'Société', paymentTerms: 'Conditions de paiement',
     balance: 'Solde dû', account: 'Compte fournisseur', recordPayment: 'Enregistrer un paiement', paymentRecorded: 'Paiement enregistré',
   },

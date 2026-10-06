@@ -1,12 +1,14 @@
 import { Router } from 'express';
 import authRoutes from './auth.routes.js';
-import { notificationRoutes, settingsRoutes } from './misc.routes.js';
+import { branchRoutes, notificationRoutes, settingsRoutes } from './misc.routes.js';
 import { cashRoutes, heldSaleRoutes, paymentMethodRoutes, returnRoutes, saleRoutes } from './sales.routes.js';
+import { inventoryRoutes, purchaseRoutes, supplierRoutes, transferRoutes } from './stock.routes.js';
 import { brandRoutes, categoryRoutes, customerRoutes, productRoutes, taxRoutes, unitRoutes } from './catalog.routes.js';
 
 const api = Router();
 api.use('/auth', authRoutes);
 api.use('/settings', settingsRoutes);
+api.use('/branches', branchRoutes);
 api.use('/notifications', notificationRoutes);
 api.use('/products', productRoutes);
 api.use('/categories', categoryRoutes);
@@ -19,4 +21,8 @@ api.use('/returns', returnRoutes);
 api.use('/held-sales', heldSaleRoutes);
 api.use('/payment-methods', paymentMethodRoutes);
 api.use('/cash', cashRoutes);
+api.use('/inventory', inventoryRoutes);
+api.use('/transfers', transferRoutes);
+api.use('/purchases', purchaseRoutes);
+api.use('/suppliers', supplierRoutes);
 export default api;

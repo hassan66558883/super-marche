@@ -115,6 +115,7 @@ const en: Translation = {
     overLimit: 'Over limit',
   },
   inventory: {
+    subtitle: "Stock levels, adjustments and movement history", skus: "Items", costValue: "Value at cost", retailValue: "Retail value", untracked: "Not tracked", reasonHint: "E.g. cycle count, expired product…",
     title: 'Inventory', current: 'Current stock', reserved: 'Reserved', available: 'Available', min: 'Min', max: 'Max', value: 'Stock value',
     adjust: 'Adjust stock', adjustment: 'Adjustment', newQuantity: 'New quantity', delta: 'Change', movements: 'Movements',
     movementType: 'Movement type', balanceAfter: 'Balance after', mvPURCHASE: 'Purchase', mvSALE: 'Sale', mvRETURN: 'Return', mvADJUSTMENT: 'Adjustment',
@@ -123,16 +124,19 @@ const en: Translation = {
     outOnly: 'Out of stock only', adjusted: 'Stock adjusted', stockStatus: 'State',
   },
   transfers: {
+    addProduct: "Add a product (name, SKU or barcode)…", noLines: "No items yet. Search or scan a product to add it.", saveDraft: "Save draft", approved: "Transfer approved", shipped: "Transfer shipped: stock has left the branch", cancelled: "Transfer cancelled", sourceStock: "Source stock", sent: "Qty sent", shortWarning: "Not enough stock at the source for some lines: shipment will be refused.", timeline: "Tracking", approveTitle: "Approve this transfer?", shipTitle: "Ship this transfer?", shipHelp: "Stock for every line will be removed from this branch.", cancelTitle: "Cancel this transfer?", cancelConfirm: "Cancel transfer", receivedDone: "Transfer received: stock has been added", receiveTitle: "Receive", receiveHelp: "Enter the quantities actually received. Differences are recorded in the audit log.", gapWarning: "Received quantities differ from what was sent: please give the reason.", overReceived: "A received quantity exceeds the quantity sent.", gapNoteHint: "E.g. 1 carton damaged in transit", confirmReceipt: "Confirm receipt", created: "Transfer {{number}} created", edit: "Edit transfer", overStockWarning: "Some quantities exceed the stock available here.", chooseBranch: "Choose a branch", outgoing: "Outgoing", incoming: "Incoming", empty: "No transfers",
     title: 'Transfers', new: 'New transfer', from: 'From', to: 'To', number: 'Transfer No.', statusDRAFT: 'Draft', statusREQUESTED: 'Requested',
     statusAPPROVED: 'Approved', statusIN_TRANSIT: 'In transit', statusRECEIVED: 'Received', statusCANCELLED: 'Cancelled', request: 'Request',
     ship: 'Ship', received: 'Qty received', workflow: 'Stock leaves the source branch when shipped and enters the destination when received.',
   },
   purchases: {
+    subtitle: "Supplier purchase orders and goods receipts", empty: "No purchase orders", submitted: "Purchase order submitted", approved: "Purchase order approved", cancelled: "Purchase order cancelled", selfApproval: "You cannot approve your own order.", receivedQty: "Received", createdBy: "Created by", approveTitle: "Approve this purchase order?", cancelTitle: "Cancel this purchase order?", cancelConfirm: "Cancel order", receivedFull: "Order fully received", receivedPartial: "Partial receipt recorded", receiveTitle: "Receive", receiveHelp: "Enter the delivered quantities. Stock and the supplier balance are updated.", remaining: "Remaining", overReceive: "A quantity exceeds what is left to receive.", updateCostHelp: "The order unit cost becomes the product purchase price.", deliveryNoteHint: "Delivery note number, remarks…", receiptValue: "Value received", confirmReceipt: "Confirm receipt", created: "Purchase order {{number}} created", edit: "Edit purchase order", chooseSupplier: "Choose a supplier",
     title: 'Purchases', new: 'New purchase order', number: 'PO No.', supplier: 'Supplier', statusDRAFT: 'Draft', statusPENDING: 'Pending',
     statusAPPROVED: 'Approved', statusRECEIVED: 'Received', statusCANCELLED: 'Cancelled', unitCost: 'Unit cost', submit: 'Submit for approval',
     receiveAll: 'Receive all', receiveQty: 'Qty to receive', expectedAt: 'Expected delivery', updateCost: 'Update purchase price',
   },
   suppliers: {
+    subtitle: "Suppliers, orders and accounts", withBalance: "With balance due", purchasesTotal: "Total purchases", openOrders: "Open orders", orders: "Orders", amountTooHigh: "Amount exceeds the balance due", fromRegister: "Pay from my register", fromRegisterHelp: "Cash is taken out of your open register", referenceHint: "Transfer or receipt number…", invalidEmail: "Invalid e-mail", termsHint: "E.g. 30 days end of month", entryPURCHASE: "Purchase", entryPAYMENT: "Payment", entryADJUSTMENT: "Adjustment", entryREFUND: "Refund", entrySALE: "Sale",
     title: 'Suppliers', new: 'New supplier', edit: 'Edit supplier', company: 'Company', paymentTerms: 'Payment terms',
     balance: 'Balance due', account: 'Supplier account', recordPayment: 'Record payment', paymentRecorded: 'Payment recorded',
   },

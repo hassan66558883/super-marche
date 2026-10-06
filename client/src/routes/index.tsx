@@ -15,6 +15,7 @@ const ProductFormPage = lazy(() => import('@/pages/products/ProductFormPage'));
 const CategoriesPage = lazy(() => import('@/pages/products/CategoriesPage'));
 const CustomersPage = lazy(() => import('@/pages/customers/CustomersPage'));
 const CustomerDetailPage = lazy(() => import('@/pages/customers/CustomerDetailPage'));
+const POSPage = lazy(() => import('@/pages/pos/POSPage'));
 
 const page = (el: ReactNode, permission?: string, anyOf?: string[]) => (
   <ErrorBoundary>
@@ -31,6 +32,8 @@ export const router = createBrowserRouter([
   {
     element: <RequireAuth />,
     children: [
+      // Full-screen point of sale (own top bar, no sidebar)
+      { path: 'pos', element: <div className="h-full">{page(<POSPage />, 'sales.create')}</div> },
       {
         element: <AppLayout />,
         children: [

@@ -27,7 +27,7 @@ export interface ApiEnvelope<T> {
 
 export interface Paginated<T> {
   items: T[];
-  meta: { page: number; pageSize: number; total: number; totalPages: number };
+  meta: { page: number; pageSize: number; total: number; totalPages: number } & Record<string, unknown>;
 }
 
 type TokenProvider = {

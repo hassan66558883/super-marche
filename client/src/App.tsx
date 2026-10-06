@@ -9,6 +9,7 @@ import { refreshSession } from '@/services/auth.service';
 import { useAuthStore } from '@/stores/auth.store';
 import { useUiStore, applyTheme } from '@/stores/ui.store';
 import { ApiError } from '@/services/api';
+import { PrintHost } from '@/components/print/PrintHost';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -42,6 +43,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider delayDuration={300}>
         <RouterProvider router={router} />
+        <PrintHost />
         <Toaster richColors position={i18n.dir() === 'rtl' ? 'top-left' : 'top-right'} closeButton dir={i18n.dir()} />
       </TooltipProvider>
     </QueryClientProvider>

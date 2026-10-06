@@ -53,6 +53,9 @@ const en: Translation = {
     week: '7 days', month: '30 days', allBranches: 'All branches', viewAll: 'View all',
   },
   pos: {
+    onCredit: 'Amount on credit',
+    holdShort: 'Hold',
+    nonCashOverpaid: 'Non-cash payments exceed the total (change is only given in cash)', heldDone: 'Sale put on hold', noHeld: 'No sales on hold', scShortcutSearch: 'Search / scan', scShortcutPick: 'Pick a search result',
     searchPlaceholder: 'Search a product or scan a barcode...', scan: 'Scan', scanHelp: 'Scan a barcode with the reader or type it',
     productNotFound: 'Product not found', allCategories: 'All', cart: 'Cart', emptyCart: 'The cart is empty',
     emptyCartHelp: 'Scan an item or tap a product to add it', product: 'Product', qty: 'Qty', unitPrice: 'Unit price',
@@ -81,6 +84,7 @@ const en: Translation = {
     provisional: 'Provisional receipt (offline)', duplicate: 'DUPLICATE', taxBase: 'Taxable base', taxAmount: 'VAT amount',
   },
   sales: {
+    notReturnable: 'This sale is cancelled or already fully refunded', creditReduced: 'Deducted from customer credit',
     title: 'Sales', invoices: 'Invoices', invoiceNo: 'Invoice No.', customer: 'Customer', cashier: 'Cashier', paymentStatus: 'Payment',
     refund: 'Refund', cancelSale: 'Cancel sale', cancelReason: 'Cancellation reason', cancelled: 'Sale cancelled',
     statusCOMPLETED: 'Completed', statusCANCELLED: 'Cancelled', statusREFUNDED: 'Refunded', statusPARTIALLY_REFUNDED: 'Partly refunded',

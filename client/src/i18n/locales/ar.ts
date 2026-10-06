@@ -53,6 +53,9 @@ const ar: Translation = {
     week: '7 أيام', month: '30 يوماً', allBranches: 'كل الفروع', viewAll: 'عرض الكل',
   },
   pos: {
+    onCredit: 'المبلغ الآجل',
+    holdShort: 'تعليق',
+    nonCashOverpaid: 'المدفوعات غير النقدية تتجاوز الإجمالي (يُرد الباقي نقدًا فقط)', heldDone: 'تم تعليق البيع', noHeld: 'لا توجد مبيعات معلقة', scShortcutSearch: 'بحث / مسح', scShortcutPick: 'اختيار نتيجة بحث',
     searchPlaceholder: 'ابحث عن منتج أو امسح الرمز الشريطي...', scan: 'مسح', scanHelp: 'امسح الرمز الشريطي بالقارئ أو اكتبه',
     productNotFound: 'المنتج غير موجود', allCategories: 'الكل', cart: 'السلة', emptyCart: 'السلة فارغة',
     emptyCartHelp: 'امسح منتجاً أو اضغط عليه لإضافته', product: 'المنتج', qty: 'الكمية', unitPrice: 'سعر الوحدة',
@@ -81,6 +84,7 @@ const ar: Translation = {
     provisional: 'إيصال مؤقت (دون اتصال)', duplicate: 'نسخة', taxBase: 'الوعاء الضريبي', taxAmount: 'مبلغ الضريبة',
   },
   sales: {
+    notReturnable: 'هذا البيع ملغى أو مسترد بالكامل', creditReduced: 'خُصم من رصيد العميل',
     title: 'المبيعات', invoices: 'الفواتير', invoiceNo: 'رقم الفاتورة', customer: 'العميل', cashier: 'أمين الصندوق', paymentStatus: 'الدفع',
     refund: 'استرداد', cancelSale: 'إلغاء البيع', cancelReason: 'سبب الإلغاء', cancelled: 'تم إلغاء البيع',
     statusCOMPLETED: 'مكتمل', statusCANCELLED: 'ملغى', statusREFUNDED: 'مسترد', statusPARTIALLY_REFUNDED: 'مسترد جزئياً',

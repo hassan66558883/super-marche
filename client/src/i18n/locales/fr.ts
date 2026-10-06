@@ -52,6 +52,9 @@ const fr = {
     week: '7 jours', month: '30 jours', allBranches: 'Toutes les succursales', viewAll: 'Tout voir',
   },
   pos: {
+    onCredit: 'Montant à crédit',
+    holdShort: 'Attente',
+    nonCashOverpaid: 'Les paiements non-espèces dépassent le total (la monnaie ne se rend qu’en espèces)', heldDone: 'Vente mise en attente', noHeld: 'Aucune vente en attente', scShortcutSearch: 'Rechercher / scanner', scShortcutPick: 'Choisir un résultat de recherche',
     searchPlaceholder: 'Rechercher un produit ou scanner un code-barres...', scan: 'Scanner', scanHelp: 'Scannez un code-barres avec le lecteur ou saisissez-le',
     productNotFound: 'Produit introuvable', allCategories: 'Tous', cart: 'Panier', emptyCart: 'Le panier est vide',
     emptyCartHelp: 'Scannez un article ou touchez un produit pour l’ajouter', product: 'Produit', qty: 'Qté', unitPrice: 'P.U.',
@@ -80,6 +83,7 @@ const fr = {
     provisional: 'Ticket provisoire (hors ligne)', duplicate: 'DUPLICATA', taxBase: 'Base HT', taxAmount: 'Montant TVA',
   },
   sales: {
+    notReturnable: 'Cette vente est annulée ou déjà entièrement remboursée', creditReduced: 'Déduit du crédit client',
     title: 'Ventes', invoices: 'Factures', invoiceNo: 'N° facture', customer: 'Client', cashier: 'Caissier', paymentStatus: 'Paiement',
     refund: 'Rembourser', cancelSale: 'Annuler la vente', cancelReason: 'Motif d’annulation', cancelled: 'Vente annulée',
     statusCOMPLETED: 'Terminée', statusCANCELLED: 'Annulée', statusREFUNDED: 'Remboursée', statusPARTIALLY_REFUNDED: 'Remb. partiel',

@@ -1,3 +1,5 @@
+/* eslint-env serviceworker */
+/* global self, caches, fetch, URL, __ASSETS__ */
 /* TECHNOVA POS service worker: keeps the app shell available offline so the POS can open
  * without the server. API calls are never cached (sales go through the IndexedDB outbox). */
 const VERSION = '__VERSION__';

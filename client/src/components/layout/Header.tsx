@@ -38,7 +38,7 @@ export function Header() {
           <WifiOff className="h-3.5 w-3.5" /> {t('common.offline')}
         </span>
       )}
-      <div className="ms-auto flex items-center gap-1">
+      <div className="ms-auto flex shrink-0 items-center gap-0.5 sm:gap-1">
         {canSell && (
           <Button asChild variant="secondary" size="sm" className="me-1 hidden h-9 sm:inline-flex">
             <Link to="/pos">

@@ -29,12 +29,12 @@ export function BranchSwitcher({ compact }: { compact?: boolean }) {
     </span>
   );
   // Assigned to a single branch: show it, nothing to choose
-  if (single) return <div className="flex h-9 max-w-[220px] items-center rounded-lg px-2 text-sm" aria-label={t('header.branch')}>{content}</div>;
+  if (single) return <div className="flex h-9 min-w-0 max-w-[220px] items-center rounded-lg px-2 text-sm" aria-label={t('header.branch')}>{content}</div>;
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-9 max-w-[260px] gap-1 px-2" aria-label={t('header.switchBranch')}>
+        <Button variant="ghost" className="h-9 min-w-0 max-w-[260px] shrink gap-1 px-2" aria-label={t('header.switchBranch')}>
           {content}
           <ChevronDown className="h-3.5 w-3.5 opacity-60" />
         </Button>
@@ -71,7 +71,7 @@ export function LanguageSwitcher({ variant = 'ghost' }: { variant?: 'ghost' | 'o
       <DropdownMenuTrigger asChild>
         <Button variant={variant} size="sm" className="h-9 gap-1.5" aria-label={t('header.language')}>
           <Globe className="h-4 w-4" />
-          <span className="text-xs font-semibold uppercase">{i18n.language}</span>
+          <span className="hidden text-xs font-semibold uppercase sm:inline">{i18n.language}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-[10rem]">

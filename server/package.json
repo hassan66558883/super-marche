@@ -15,7 +15,8 @@
     "db:migration:new": "prisma migrate dev --create-only",
     "db:deploy": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
-    "db:generate": "prisma generate"
+    "db:generate": "prisma generate",
+    "db:demo-history": "tsx prisma/demo-history.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

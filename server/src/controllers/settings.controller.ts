@@ -5,6 +5,7 @@ import { settingSchemas } from '../validators/settings.validators.js';
 import { ok } from '../utils/http.js';
 import { badRequest } from '../utils/errors.js';
 import { AuditService } from '../services/audit.service.js';
+import { setBusinessTz } from '../utils/tz.js';
 
 export const SettingsController = {
   async all(req: Request, res: Response) {
@@ -18,6 +19,7 @@ export const SettingsController = {
     const branchScoped = req.query.scope === 'branch';
     const before = await SettingsService.get(key, branchScoped ? req.branchId : null);
     await SettingsService.set(key, value, branchScoped ? req.branchId! : null);
+    if (key === 'locale' && !branchScoped) setBusinessTz((value as { timezone?: string }).timezone);
     await AuditService.log({ action: 'UPDATE', module: 'settings', recordId: key, description: `Paramètres « ${key} » modifiés`, metadata: { before, after: value } as Prisma.InputJsonValue }, req);
     return ok(res, await SettingsService.get(key, req.branchId));
   },

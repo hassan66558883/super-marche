@@ -6,6 +6,8 @@ import type { AppSettings } from '@/types/settings';
 
 export function useSettings() {
   const branchId = useAuthStore((s) => s.branchId);
+  // Wait for the session to be restored, otherwise the first request after a reload is a 401
+  const authed = useAuthStore((s) => s.status === 'authenticated');
   return useQuery({
     queryKey: ['settings', branchId],
     queryFn: async () => {
@@ -14,6 +16,6 @@ export function useSettings() {
       return s;
     },
     staleTime: 5 * 60_000,
-    enabled: !!branchId,
+    enabled: !!branchId && authed,
   });
 }

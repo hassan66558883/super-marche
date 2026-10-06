@@ -13,7 +13,7 @@ export const settingSchemas: Record<string, z.ZodTypeAny> = {
     code: str(3).min(3), symbol: str(8).min(1), decimals: z.number().int().min(0).max(3),
     symbolPosition: z.enum(['before', 'after']), thousandsSeparator: z.enum([',', ' ', '.', '']),
   }),
-  locale: z.object({ default: z.enum(['fr', 'ar', 'en']), available: z.array(z.enum(['fr', 'ar', 'en'])).min(1), timezone: str(60) }),
+  locale: z.object({ default: z.enum(['fr', 'ar', 'en']), available: z.array(z.enum(['fr', 'ar', 'en'])).min(1), timezone: str(60).refine((tz) => { try { new Intl.DateTimeFormat('en', { timeZone: tz }); return true; } catch { return false; } }, 'Fuseau horaire inconnu') }),
   receipt: z.object({
     footer: str(300), showLogo: z.boolean(), showTaxDetails: z.boolean(), paperWidth: z.union([z.literal(58), z.literal(80)]),
     showBarcode: z.boolean(), autoPrint: z.boolean(),

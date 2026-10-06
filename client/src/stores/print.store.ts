@@ -3,7 +3,7 @@ import type { CashSummary, Sale } from '@/types/sales';
 
 export type PrintKind = 'receipt' | 'invoice';
 export type PrintJob =
-  | { kind: PrintKind; sale: Sale; duplicate?: boolean }
+  | { kind: PrintKind; sale: Sale; duplicate?: boolean; fallback?: boolean }
   | { kind: 'zreport'; summary: CashSummary };
 
 interface PrintState {

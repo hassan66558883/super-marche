@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { businessTz } from './tz.js';
+import { localMidnightUtc, addDaysIso } from '../services/reports/time.js';
 
 export const pageQuery = z.object({
   page: z.coerce.number().int().min(1).default(1),
@@ -22,10 +24,10 @@ export const dateRange = z.object({
   to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
 });
 
-/** Inclusive local-day range → [gte, lt) Date bounds */
+/** Inclusive business-day range (in the business time zone) → [gte, lt) UTC bounds */
 export function dayBounds(from?: string, to?: string) {
-  const gte = from ? new Date(`${from}T00:00:00`) : undefined;
-  const lt = to ? new Date(new Date(`${to}T00:00:00`).getTime() + 86_400_000) : undefined;
+  const gte = from ? localMidnightUtc(from, businessTz()) : undefined;
+  const lt = to ? localMidnightUtc(addDaysIso(to, 1), businessTz()) : undefined;
   return gte || lt ? { ...(gte ? { gte } : {}), ...(lt ? { lt } : {}) } : undefined;
 }
 

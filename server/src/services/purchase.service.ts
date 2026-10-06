@@ -31,7 +31,7 @@ const totalsOf = (lines: ReturnType<typeof computeLines>) => {
   const tax = lines.reduce((a, l) => a.plus(l._tax), D(0));
   return { subtotal: toDb(subtotal), taxTotal: toDb(tax), total: toDb(subtotal.plus(tax)) };
 };
-const strip = (lines: ReturnType<typeof computeLines>) => lines.map(({ _gross, _tax, ...l }) => l); // eslint-disable-line @typescript-eslint/no-unused-vars
+const strip = (lines: ReturnType<typeof computeLines>) => lines.map(({ _gross, _tax, ...l }) => l);
 
 /**
  * Purchase orders: DRAFT → PENDING (submitted) → APPROVED → RECEIVED (possibly over several receipts).

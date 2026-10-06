@@ -163,6 +163,7 @@ enum AuditAction {
   APPROVE
   RECEIVE
   PASSWORD_CHANGE
+  EXPORT
 }
 
 enum NotificationType {

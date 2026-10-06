@@ -37,9 +37,9 @@ export default function SalesPage({ mode = 'sales' }: { mode?: Mode }) {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState('all');
-  const [payment, setPayment] = useState(mode === 'invoices' ? 'unpaid' : 'all');
-  const [from, setFrom] = useState(mode === 'invoices' || sessionId ? '' : isoDay(addDays(new Date(), -7)));
-  const [to, setTo] = useState(mode === 'invoices' || sessionId ? '' : isoDay(new Date()));
+  const [payment, setPayment] = useState(mode === 'invoices' || params.get('unpaid') ? 'unpaid' : 'all');
+  const [from, setFrom] = useState(mode === 'invoices' || sessionId || params.get('unpaid') ? '' : isoDay(addDays(new Date(), -7)));
+  const [to, setTo] = useState(mode === 'invoices' || sessionId || params.get('unpaid') ? '' : isoDay(new Date()));
   const q = {
     page, pageSize: 25, search: search || undefined, from: from || undefined, to: to || undefined, registerSessionId: sessionId,
     status: status === 'all' ? undefined : status,

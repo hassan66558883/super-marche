@@ -31,6 +31,10 @@ const ExpensesPage = lazy(() => import('@/pages/expenses/ExpensesPage'));
 const SalesPage = lazy(() => import('@/pages/sales/SalesPage'));
 const SaleDetailPage = lazy(() => import('@/pages/sales/SaleDetailPage'));
 const ReturnsPage = lazy(() => import('@/pages/returns/ReturnsPage'));
+const ReportsPage = lazy(() => import('@/pages/reports/ReportsPage'));
+const UsersPage = lazy(() => import('@/pages/users/UsersPage'));
+const AuditPage = lazy(() => import('@/pages/audit/AuditPage'));
+const SettingsPage = lazy(() => import('@/pages/settings/SettingsPage'));
 
 const page = (el: ReactNode, permission?: string, anyOf?: string[]) => (
   <ErrorBoundary>
@@ -78,6 +82,11 @@ export const router = createBrowserRouter([
           { path: 'sales/:id', element: page(<SaleDetailPage />, 'sales.view') },
           { path: 'invoices', element: page(<SalesPage key="invoices" mode="invoices" />, 'sales.view') },
           { path: 'returns', element: page(<ReturnsPage />, 'sales.return') },
+          { path: 'reports', element: page(<ReportsPage />, 'reports.view') },
+          { path: 'reports/:key', element: page(<ReportsPage />, 'reports.view') },
+          { path: 'users', element: page(<UsersPage />, 'users.view') },
+          { path: 'audit', element: page(<AuditPage />, 'audit.view') },
+          { path: 'settings', element: page(<SettingsPage />, 'settings.manage') },
           { path: '*', element: page(<NotFoundPage />) },
         ],
       },

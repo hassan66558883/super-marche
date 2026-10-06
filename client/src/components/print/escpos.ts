@@ -62,3 +62,16 @@ export function encodeEscPos(doc: ReceiptDoc, columns = 48): Uint8Array {
   raw(GS, 0x56, 0x42, 0x00); // partial cut
   return new Uint8Array(out);
 }
+
+/** Short page used by the "test print" button in printer settings. */
+export function encodeTestPage(message: string, columns = 48): Uint8Array {
+  const out: number[] = [ESC, 0x40, ESC, 0x74, 16, ESC, 0x61, 1, ESC, 0x45, 1];
+  const text = (s: string) => { for (const ch of s.normalize('NFC')) { const c = ch.charCodeAt(0); out.push(c < 256 ? c : 0x3f); } out.push(0x0a); };
+  text('TECHNOVA POS');
+  out.push(ESC, 0x45, 0);
+  text('-'.repeat(columns));
+  text(message);
+  text(new Date().toLocaleString('fr-FR'));
+  out.push(0x0a, 0x0a, 0x0a, GS, 0x56, 0x42, 0x00);
+  return new Uint8Array(out);
+}

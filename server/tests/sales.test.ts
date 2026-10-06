@@ -266,3 +266,16 @@ describe('Held sales', () => {
     expect((await cashier.get('/api/held-sales')).body.data).toHaveLength(0);
   });
 });
+
+describe('Cost confidentiality', () => {
+  it('never sends cost prices or margins to a cashier', async () => {
+    const list = await cashier.get('/api/sales');
+    expect(list.status).toBe(200);
+    expect(list.body.data.length).toBeGreaterThan(0);
+    const sale = await cashier.get(`/api/sales/${list.body.data[0].id}`);
+    expect(sale.body.data.costTotal).toBeUndefined();
+    expect(sale.body.data.items[0].unitCost).toBeUndefined();
+    const asManager = await manager.get(`/api/sales/${list.body.data[0].id}`);
+    expect(asManager.body.data.items[0].unitCost).toBeDefined();
+  });
+});

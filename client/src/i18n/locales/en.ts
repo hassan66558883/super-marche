@@ -84,6 +84,7 @@ const en: Translation = {
     provisional: 'Provisional receipt (offline)', duplicate: 'DUPLICATE', taxBase: 'Taxable base', taxAmount: 'VAT amount',
   },
   sales: {
+    returnNumber: "Return no.", invoiceNumber: "Invoice no.", notRestocked: "Not restocked", returnsSubtitle: "Returns and refunds; the original sale is always kept", newReturn: "New return", reprintReceipt: "Reprint receipt", printInvoice: "A4 invoice", returnedQty: "{{qty}} returned", refunded: "Refunded", dueDate: "Due date", cancelTitle: "Cancel sale {{number}}?", cancelHelp: "Stock is put back, payments are voided and cash leaves the register. The sale stays visible as “Cancelled”.", overdue: "overdue", invoicesSubtitle: "Customer invoices with a balance due", subtitle: "Ticket and invoice history", unpaidOnly: "Unpaid", overdueOnly: "Overdue", return: "Return items",
     notReturnable: 'This sale is cancelled or already fully refunded', creditReduced: 'Deducted from customer credit',
     title: 'Sales', invoices: 'Invoices', invoiceNo: 'Invoice No.', customer: 'Customer', cashier: 'Cashier', paymentStatus: 'Payment',
     refund: 'Refund', cancelSale: 'Cancel sale', cancelReason: 'Cancellation reason', cancelled: 'Sale cancelled',
@@ -141,6 +142,7 @@ const en: Translation = {
     balance: 'Balance due', account: 'Supplier account', recordPayment: 'Record payment', paymentRecorded: 'Payment recorded',
   },
   cash: {
+    xReport: "X report", closedBy: "Closed by", printedAt: "Printed", salesTotal: "Sales total", drawer: "Cash drawer", cashierSignature: "Cashier signature", managerSignature: "Manager signature", subtitle: "Opening, cash movements, closing and Z reports", sessionSales: "Session sales", movements: "Movements", cashInHelp: "Add cash to the drawer (change float).", cashOutHelp: "Take cash out of the drawer (bank deposit, hand-over to manager).", insufficientCash: "Amount exceeds the cash in the drawer", cashInHint: "E.g. extra change", cashOutHint: "E.g. bank deposit", closeHelp: "Count the cash in the drawer and enter the amount. The difference is recorded and the Z report printed.", countHelper: "Count by notes and coins", balanced: "Balanced", surplus: "Surplus", shortage: "Shortage", explainDifference: "Explain the difference", closeAndPrint: "Close and print Z",
     title: 'Cash register', register: 'Register', session: 'Session', openRegister: 'Open register', closeRegister: 'Close register', opening: 'Opening float',
     expected: 'Expected cash', counted: 'Counted cash', difference: 'Difference', cashSales: 'Cash sales', cashRefunds: 'Refunds',
     cashExpenses: 'Expenses', cashIn: 'Cash in', cashOut: 'Cash out', movement: 'Movement', openedBy: 'Opened by',
@@ -150,6 +152,7 @@ const en: Translation = {
     salesByMethod: 'Sales by payment method', alreadyOpen: 'You already have an open register',
   },
   expenses: {
+    recorded: "Expense recorded", formHelp: "Every expense is tracked. Mistakes are voided, never deleted.", descriptionHint: "E.g. generator fuel", referenceHint: "Receipt or invoice number…", voidedBy: "Voided by {{name}}", fromRegisterShort: "Register", subtitle: "Operating costs by category", categories: "Categories", createOnly: "You can record expenses but not view the list.", statusRECORDED: "Recorded", statusVOID: "Voided", periodTotal: "Period total", voidTitle: "Void this expense?", voidRegisterHelp: "the cash goes back into the register if it is still open", categoriesHelp: "Inactive categories are no longer offered.", newCategory: "New category",
     title: 'Expenses', new: 'New expense', category: 'Category', paymentMethod: 'Payment method', void: 'Void expense',
     voided: 'Voided', fromRegister: 'Paid from the register',
   },

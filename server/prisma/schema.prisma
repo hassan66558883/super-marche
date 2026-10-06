@@ -3,6 +3,9 @@
 //  - UUID primary keys, snake_case tables/columns via @@map/@map
 //  - Money: NUMERIC(15,2); quantities: NUMERIC(14,3) (supports kg/l)
 //  - Financial and stock history is never deleted: statuses + DB triggers (see migrations)
+//  - Some indexes/triggers live only in SQL migrations (pg_trgm search, inventory NULLS NOT DISTINCT).
+//    Prisma cannot see them and will propose DROP INDEX in new migrations: create migrations with
+//    `npm run db:migration:new`, remove any such DROP statements, then apply with `npm run db:migrate`.
 
 generator client {
   provider = "prisma-client-js"
@@ -1034,9 +1037,12 @@ model Expense {
   description       String?
   expenseDate       DateTime      @map("expense_date") @db.Date
   paymentMethodCode String        @map("payment_method_code")
+  reference         String?
   registerSessionId String?       @map("register_session_id") @db.Uuid
   status            ExpenseStatus @default(RECORDED)
   voidReason        String?       @map("void_reason")
+  voidedById        String?       @map("voided_by_id") @db.Uuid
+  voidedAt          DateTime?     @map("voided_at")
   userId            String        @map("user_id") @db.Uuid
   createdAt         DateTime      @default(now()) @map("created_at")
   updatedAt         DateTime      @updatedAt @map("updated_at")

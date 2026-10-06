@@ -5,6 +5,7 @@ import { useSettings } from '@/hooks/useSettings';
 import { Receipt80 } from './Receipt80';
 import { InvoiceA4 } from './InvoiceA4';
 import { buildReceipt } from './receipt-model';
+import { ZReport80 } from './ZReport80';
 
 /**
  * Renders the queued document into a print-only area, sets the page size
@@ -19,7 +20,7 @@ export function PrintHost() {
     if (!job) return;
     const width = settings.data?.receipt.paperWidth ?? 80;
     const style = document.createElement('style');
-    style.textContent = job.kind === 'receipt' ? `@page { size: ${width}mm auto; margin: 0; }` : '@page { size: A4; margin: 0; }';
+    style.textContent = job.kind !== 'invoice' ? `@page { size: ${width}mm auto; margin: 0; }` : '@page { size: A4; margin: 0; }';
     document.head.appendChild(style);
     const after = () => { style.remove(); done(); };
     window.addEventListener('afterprint', after, { once: true });
@@ -31,9 +32,10 @@ export function PrintHost() {
   if (!job) return null;
   return createPortal(
     <div className="print-area pointer-events-none fixed left-[-10000px] top-0" aria-hidden>
-      {job.kind === 'receipt'
-        ? <Receipt80 doc={buildReceipt(job.sale, settings.data, job.duplicate)} width={settings.data?.receipt.paperWidth ?? 80} />
-        : <InvoiceA4 sale={job.sale} settings={settings.data} duplicate={job.duplicate} />}
+      {job.kind === 'zreport' ? <ZReport80 summary={job.summary} settings={settings.data} width={settings.data?.receipt.paperWidth ?? 80} />
+        : job.kind === 'receipt'
+          ? <Receipt80 doc={buildReceipt(job.sale, settings.data, job.duplicate)} width={settings.data?.receipt.paperWidth ?? 80} />
+          : <InvoiceA4 sale={job.sale} settings={settings.data} duplicate={job.duplicate} />}
     </div>,
     document.body,
   );

@@ -2,6 +2,7 @@ import { Router } from 'express';
 import authRoutes from './auth.routes.js';
 import { branchRoutes, notificationRoutes, settingsRoutes } from './misc.routes.js';
 import { cashRoutes, heldSaleRoutes, paymentMethodRoutes, returnRoutes, saleRoutes } from './sales.routes.js';
+import { expenseRoutes } from './expense.routes.js';
 import { inventoryRoutes, purchaseRoutes, supplierRoutes, transferRoutes } from './stock.routes.js';
 import { brandRoutes, categoryRoutes, customerRoutes, productRoutes, taxRoutes, unitRoutes } from './catalog.routes.js';
 
@@ -25,4 +26,5 @@ api.use('/inventory', inventoryRoutes);
 api.use('/transfers', transferRoutes);
 api.use('/purchases', purchaseRoutes);
 api.use('/suppliers', supplierRoutes);
+api.use('/expenses', expenseRoutes);
 export default api;

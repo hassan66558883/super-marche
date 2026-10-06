@@ -13,24 +13,31 @@ import { pageQuery, dateRange, paging, dayBounds } from '../utils/pagination.js'
 import { hasPermission } from '../middleware/auth.js';
 import { forbidden, notFound } from '../utils/errors.js';
 
+/** Cost prices and margins are only visible with products.view_cost (cashiers never see them). */
+function redact<T extends { costTotal?: unknown; items?: { unitCost?: unknown }[] }>(req: Request, sale: T): T {
+  if (hasPermission(req, 'products.view_cost')) return sale;
+  const { costTotal: _c, ...rest } = sale;
+  return { ...rest, items: sale.items?.map(({ unitCost: _u, ...i }) => i) } as T;
+}
+
 export const SaleController = {
   async create(req: Request, res: Response) {
     const { sale, duplicate } = await SaleService.create(req, parseBody(saleInput, req));
-    return duplicate ? ok(res, sale, { duplicate: true }) : created(res, sale);
+    return duplicate ? ok(res, redact(req, sale), { duplicate: true }) : created(res, redact(req, sale));
   },
   async list(req: Request, res: Response) {
     const q = parseQuery(saleListQuery, req);
     const { items, total, sums } = await SaleService.list(req, q);
-    return ok(res, items, { ...pageMeta(q.page, q.pageSize, total), sums });
+    return ok(res, items.map((i) => redact(req, i)), { ...pageMeta(q.page, q.pageSize, total), sums });
   },
   async get(req: Request, res: Response) {
-    return ok(res, await SaleService.get(req, String(req.params.id)));
+    return ok(res, redact(req, await SaleService.get(req, String(req.params.id))));
   },
   async byInvoice(req: Request, res: Response) {
-    return ok(res, await SaleService.findByInvoice(req, String(req.params.number)));
+    return ok(res, redact(req, await SaleService.findByInvoice(req, String(req.params.number))));
   },
   async cancel(req: Request, res: Response) {
-    return ok(res, await SaleService.cancel(req, String(req.params.id), parseBody(cancelInput, req).reason));
+    return ok(res, redact(req, await SaleService.cancel(req, String(req.params.id), parseBody(cancelInput, req).reason)));
   },
   async createReturn(req: Request, res: Response) {
     return created(res, await ReturnService.create(req, String(req.params.id), parseBody(returnInput, req)));
@@ -44,7 +51,8 @@ export const ReturnController = {
     return ok(res, items, pageMeta(q.page, q.pageSize, total));
   },
   async get(req: Request, res: Response) {
-    return ok(res, await ReturnService.get(req, String(req.params.id)));
+    const r = await ReturnService.get(req, String(req.params.id));
+    return ok(res, { ...r, sale: redact(req, r.sale) });
   },
 };
 
@@ -90,7 +98,8 @@ export const CashController = {
     if (s.session.branchId !== req.branchId) throw notFound('SESSION_NOT_FOUND', 'Session de caisse introuvable');
     if (s.session.openedById !== req.auth!.userId && !hasPermission(req, 'cash.view')) throw forbidden();
     const movements = await prisma.cashMovement.findMany({ where: { sessionId: s.session.id }, orderBy: { createdAt: 'asc' } });
-    return ok(res, { ...s, movements });
+    const users = await prisma.user.findMany({ where: { id: { in: [...new Set(movements.map((m) => m.userId))] } }, select: { id: true, fullName: true } });
+    return ok(res, { ...s, movements: movements.map((m) => ({ ...m, userName: users.find((u) => u.id === m.userId)?.fullName ?? null })) });
   },
   async cashIn(req: Request, res: Response) {
     const b = parseBody(amountNote.extend({ amount: z.coerce.number().positive(), note: z.string().trim().min(2).max(300) }), req);

@@ -84,6 +84,7 @@ const ar: Translation = {
     provisional: 'إيصال مؤقت (دون اتصال)', duplicate: 'نسخة', taxBase: 'الوعاء الضريبي', taxAmount: 'مبلغ الضريبة',
   },
   sales: {
+    returnNumber: "رقم المرتجع", invoiceNumber: "رقم الفاتورة", notRestocked: "لم يُعَد إلى المخزون", returnsSubtitle: "المرتجعات والمبالغ المستردة؛ يُحتفظ دائمًا بالبيع الأصلي", newReturn: "مرتجع جديد", reprintReceipt: "إعادة طباعة الإيصال", printInvoice: "فاتورة A4", returnedQty: "{{qty}} مُرتجع", refunded: "مُسترد", dueDate: "تاريخ الاستحقاق", cancelTitle: "إلغاء البيع {{number}}؟", cancelHelp: "يُعاد المخزون وتُلغى المدفوعات وتخرج النقود من الصندوق. يبقى البيع ظاهرًا بحالة «ملغى».", overdue: "متأخر", invoicesSubtitle: "فواتير العملاء التي عليها رصيد مستحق", subtitle: "سجل الإيصالات والفواتير", unpaidOnly: "غير مسددة", overdueOnly: "متأخرة", return: "إرجاع أصناف",
     notReturnable: 'هذا البيع ملغى أو مسترد بالكامل', creditReduced: 'خُصم من رصيد العميل',
     title: 'المبيعات', invoices: 'الفواتير', invoiceNo: 'رقم الفاتورة', customer: 'العميل', cashier: 'أمين الصندوق', paymentStatus: 'الدفع',
     refund: 'استرداد', cancelSale: 'إلغاء البيع', cancelReason: 'سبب الإلغاء', cancelled: 'تم إلغاء البيع',
@@ -141,6 +142,7 @@ const ar: Translation = {
     balance: 'الرصيد المستحق', account: 'حساب المورد', recordPayment: 'تسجيل دفعة', paymentRecorded: 'تم تسجيل الدفعة',
   },
   cash: {
+    xReport: "تقرير X", closedBy: "أغلقه", printedAt: "تاريخ الطباعة", salesTotal: "إجمالي المبيعات", drawer: "درج النقود", cashierSignature: "توقيع أمين الصندوق", managerSignature: "توقيع المدير", subtitle: "الفتح وحركات النقد والإغلاق وتقارير Z", sessionSales: "مبيعات الجلسة", movements: "الحركات", cashInHelp: "إضافة نقود إلى الدرج (فكة).", cashOutHelp: "سحب نقود من الدرج (إيداع بنكي، تسليم للمدير).", insufficientCash: "المبلغ يتجاوز النقد الموجود في الصندوق", cashInHint: "مثال: فكة إضافية", cashOutHint: "مثال: إيداع بنكي", closeHelp: "عُدّ النقود في الدرج وأدخل المبلغ. يُسجَّل الفرق ويُطبع تقرير Z.", countHelper: "العد حسب الأوراق والقطع", balanced: "الصندوق مطابق", surplus: "فائض", shortage: "عجز", explainDifference: "اشرح الفرق", closeAndPrint: "إغلاق وطباعة Z",
     title: 'الصندوق', register: 'الصندوق', session: 'الجلسة', openRegister: 'فتح الصندوق', closeRegister: 'إغلاق الصندوق', opening: 'رصيد الافتتاح',
     expected: 'النقد المتوقع', counted: 'النقد المعدود', difference: 'الفرق', cashSales: 'المبيعات النقدية', cashRefunds: 'المبالغ المستردة',
     cashExpenses: 'المصروفات', cashIn: 'إيداع نقدي', cashOut: 'سحب نقدي', movement: 'حركة', openedBy: 'فتحه',
@@ -150,6 +152,7 @@ const ar: Translation = {
     salesByMethod: 'المبيعات حسب طريقة الدفع', alreadyOpen: 'لديك صندوق مفتوح بالفعل',
   },
   expenses: {
+    recorded: "تم تسجيل المصروف", formHelp: "كل مصروف مُتتبَّع. يُصحَّح الخطأ بالإلغاء وليس بالحذف أبدًا.", descriptionHint: "مثال: وقود المولد", referenceHint: "رقم الإيصال أو الفاتورة…", voidedBy: "ألغاه {{name}}", fromRegisterShort: "الصندوق", subtitle: "مصاريف التشغيل حسب الفئة", categories: "الفئات", createOnly: "يمكنك تسجيل المصاريف دون الاطلاع على القائمة.", statusRECORDED: "مسجّل", statusVOID: "ملغى", periodTotal: "إجمالي الفترة", voidTitle: "إلغاء هذا المصروف؟", voidRegisterHelp: "تعود النقود إلى الصندوق إذا كان لا يزال مفتوحًا", categoriesHelp: "لم تعد الفئات غير النشطة متاحة للإدخال.", newCategory: "فئة جديدة",
     title: 'المصروفات', new: 'مصروف جديد', category: 'الفئة', paymentMethod: 'طريقة الدفع', void: 'إلغاء المصروف',
     voided: 'ملغى', fromRegister: 'مدفوع من الصندوق',
   },

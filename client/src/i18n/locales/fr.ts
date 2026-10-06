@@ -83,6 +83,7 @@ const fr = {
     provisional: 'Ticket provisoire (hors ligne)', duplicate: 'DUPLICATA', taxBase: 'Base HT', taxAmount: 'Montant TVA',
   },
   sales: {
+    returnNumber: "N° retour", invoiceNumber: "N° facture", notRestocked: "Non remis en stock", returnsSubtitle: "Retours et remboursements ; la vente d’origine est toujours conservée", newReturn: "Nouveau retour", reprintReceipt: "Réimprimer le ticket", printInvoice: "Facture A4", returnedQty: "{{qty}} retourné(s)", refunded: "Remboursé", dueDate: "Échéance", cancelTitle: "Annuler la vente {{number}} ?", cancelHelp: "Le stock est remis, les paiements sont annulés et les espèces sorties de la caisse. La vente reste visible avec le statut « Annulée ».", overdue: "en retard", invoicesSubtitle: "Factures clients avec un reste à payer", subtitle: "Historique des tickets et factures", unpaidOnly: "Non soldées", overdueOnly: "En retard", return: "Retourner des articles",
     notReturnable: 'Cette vente est annulée ou déjà entièrement remboursée', creditReduced: 'Déduit du crédit client',
     title: 'Ventes', invoices: 'Factures', invoiceNo: 'N° facture', customer: 'Client', cashier: 'Caissier', paymentStatus: 'Paiement',
     refund: 'Rembourser', cancelSale: 'Annuler la vente', cancelReason: 'Motif d’annulation', cancelled: 'Vente annulée',
@@ -140,6 +141,7 @@ const fr = {
     balance: 'Solde dû', account: 'Compte fournisseur', recordPayment: 'Enregistrer un paiement', paymentRecorded: 'Paiement enregistré',
   },
   cash: {
+    xReport: "Rapport X", closedBy: "Fermée par", printedAt: "Imprimé le", salesTotal: "Total des ventes", drawer: "Tiroir-caisse", cashierSignature: "Signature caissier", managerSignature: "Signature gérant", subtitle: "Ouverture, mouvements d’espèces, clôture et rapports Z", sessionSales: "Ventes de la session", movements: "Mouvements", cashInHelp: "Ajout d’espèces dans le tiroir (monnaie, appoint).", cashOutHelp: "Retrait d’espèces du tiroir (dépôt en banque, remise au gérant).", insufficientCash: "Montant supérieur aux espèces en caisse", cashInHint: "Ex. : appoint de monnaie", cashOutHint: "Ex. : dépôt en banque", closeHelp: "Comptez les espèces du tiroir et saisissez le montant. L’écart est enregistré et le rapport Z est imprimé.", countHelper: "Compter par billets et pièces", balanced: "Caisse juste", surplus: "Excédent", shortage: "Manquant", explainDifference: "Expliquez l’écart", closeAndPrint: "Fermer et imprimer le Z",
     title: 'Caisse', register: 'Caisse', session: 'Session', openRegister: 'Ouvrir la caisse', closeRegister: 'Fermer la caisse', opening: 'Fond de caisse',
     expected: 'Espèces attendues', counted: 'Espèces comptées', difference: 'Écart', cashSales: 'Ventes en espèces', cashRefunds: 'Remboursements',
     cashExpenses: 'Dépenses', cashIn: 'Entrée d’espèces', cashOut: 'Sortie d’espèces', movement: 'Mouvement', openedBy: 'Ouverte par',
@@ -149,6 +151,7 @@ const fr = {
     salesByMethod: 'Ventes par mode de paiement', alreadyOpen: 'Vous avez déjà une caisse ouverte',
   },
   expenses: {
+    recorded: "Dépense enregistrée", formHelp: "Toute dépense est tracée. Une erreur se corrige par annulation, jamais par suppression.", descriptionHint: "Ex. : carburant groupe électrogène", referenceHint: "N° de reçu, facture…", voidedBy: "Annulée par {{name}}", fromRegisterShort: "Caisse", subtitle: "Charges de fonctionnement par catégorie", categories: "Catégories", createOnly: "Vous pouvez saisir des dépenses, mais pas consulter la liste.", statusRECORDED: "Enregistrée", statusVOID: "Annulée", periodTotal: "Total de la période", voidTitle: "Annuler cette dépense ?", voidRegisterHelp: "les espèces retournent dans la caisse si elle est encore ouverte", categoriesHelp: "Les catégories inactives ne sont plus proposées à la saisie.", newCategory: "Nouvelle catégorie",
     title: 'Dépenses', new: 'Nouvelle dépense', category: 'Catégorie', paymentMethod: 'Mode de paiement', void: 'Annuler la dépense',
     voided: 'Annulée', fromRegister: 'Payée depuis la caisse',
   },

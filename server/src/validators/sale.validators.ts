@@ -40,6 +40,11 @@ export const saleListQuery = pageQuery.merge(dateRange).extend({
   paymentStatus: z.enum(['PAID', 'PARTIAL', 'CREDIT']).optional(),
   cashierId: z.string().uuid().optional(),
   customerId: z.string().uuid().optional(),
+  /** Customer invoices with money still owed (PARTIAL or CREDIT) */
+  unpaid: z.enum(['true', 'false']).optional(),
+  /** Unpaid invoices past their due date */
+  overdue: z.enum(['true', 'false']).optional(),
+  registerSessionId: z.string().uuid().optional(),
 });
 
 export const cancelInput = z.object({ reason: z.string().trim().min(3).max(500) });

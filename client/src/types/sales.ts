@@ -42,7 +42,7 @@ export interface Sale {
   branch: Branch; returns: SaleReturn[];
 }
 
-export type SaleListItem = Pick<Sale, 'id' | 'invoiceNumber' | 'status' | 'paymentStatus' | 'total' | 'amountDue' | 'amountPaid' | 'discountTotal' | 'createdAt'> & {
+export type SaleListItem = Pick<Sale, 'id' | 'invoiceNumber' | 'status' | 'paymentStatus' | 'total' | 'amountDue' | 'amountPaid' | 'discountTotal' | 'createdAt' | 'dueDate'> & {
   customer: { id: string; name: string } | null; cashier: { id: string; fullName: string }; branch: { code: string; name: string };
   payments: { paymentMethod: { code: string; name: string }; amount: string }[];
 };
@@ -67,7 +67,10 @@ export interface CashSession {
   openedAt: string; closedAt: string | null;
   register: { name: string }; openedBy: { id?: string; fullName: string }; closedBy?: { fullName: string } | null;
 }
-export interface CashMovement { id: string; type: 'OPEN' | 'SALE' | 'REFUND' | 'EXPENSE' | 'CASH_IN' | 'CASH_OUT' | 'CLOSE'; amount: string; reference: string | null; note: string | null; createdAt: string }
+export interface CashMovement {
+  id: string; type: 'OPEN' | 'SALE' | 'REFUND' | 'EXPENSE' | 'CASH_IN' | 'CASH_OUT' | 'CLOSE'; amount: string; reference: string | null; note: string | null;
+  referenceType: string | null; referenceId: string | null; createdAt: string; userName?: string | null;
+}
 export interface CashSummary {
   session: CashSession; opening: string; cashSales: string; cashRefunds: string; cashExpenses: string; cashIn: string; cashOut: string;
   expected: string; salesCount: number; salesTotal: string;

@@ -25,6 +25,12 @@ const PurchaseFormPage = lazy(() => import('@/pages/purchases/PurchaseFormPage')
 const PurchaseDetailPage = lazy(() => import('@/pages/purchases/PurchaseDetailPage'));
 const SuppliersPage = lazy(() => import('@/pages/suppliers/SuppliersPage'));
 const SupplierDetailPage = lazy(() => import('@/pages/suppliers/SupplierDetailPage'));
+const CashPage = lazy(() => import('@/pages/cash/CashPage'));
+const CashSessionPage = lazy(() => import('@/pages/cash/CashSessionPage'));
+const ExpensesPage = lazy(() => import('@/pages/expenses/ExpensesPage'));
+const SalesPage = lazy(() => import('@/pages/sales/SalesPage'));
+const SaleDetailPage = lazy(() => import('@/pages/sales/SaleDetailPage'));
+const ReturnsPage = lazy(() => import('@/pages/returns/ReturnsPage'));
 
 const page = (el: ReactNode, permission?: string, anyOf?: string[]) => (
   <ErrorBoundary>
@@ -65,6 +71,13 @@ export const router = createBrowserRouter([
           { path: 'purchases/:id/edit', element: page(<PurchaseFormPage />, 'purchases.create') },
           { path: 'suppliers', element: page(<SuppliersPage />, 'suppliers.view') },
           { path: 'suppliers/:id', element: page(<SupplierDetailPage />, 'suppliers.view') },
+          { path: 'cash', element: page(<CashPage />, undefined, ['cash.operate', 'cash.view']) },
+          { path: 'cash/sessions/:id', element: page(<CashSessionPage />, undefined, ['cash.operate', 'cash.view']) },
+          { path: 'expenses', element: page(<ExpensesPage />, undefined, ['expenses.view', 'expenses.create']) },
+          { path: 'sales', element: page(<SalesPage />, 'sales.view') },
+          { path: 'sales/:id', element: page(<SaleDetailPage />, 'sales.view') },
+          { path: 'invoices', element: page(<SalesPage key="invoices" mode="invoices" />, 'sales.view') },
+          { path: 'returns', element: page(<ReturnsPage />, 'sales.return') },
           { path: '*', element: page(<NotFoundPage />) },
         ],
       },

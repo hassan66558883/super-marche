@@ -12,6 +12,7 @@
     "lint": "eslint src tests",
     "test": "vitest run",
     "db:migrate": "prisma migrate dev",
+    "db:migration:new": "prisma migrate dev --create-only",
     "db:deploy": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
     "db:generate": "prisma generate"

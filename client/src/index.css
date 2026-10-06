@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * TECHNOVA colour system — every colour is a CSS variable (HSL triplet) so a
+ * deployment can rebrand by overriding these tokens only.
+ */
+@layer base {
+  :root {
+    --background: 216 33% 97%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 221 77% 31%;          /* deep blue */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 152 69% 36%;        /* green */
+    --secondary-foreground: 0 0% 100%;
+    --success: 152 69% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 28 92% 50%;           /* orange */
+    --warning-foreground: 0 0% 100%;
+    --destructive: 0 74% 50%;        /* red */
+    --destructive-foreground: 0 0% 100%;
+    --muted: 214 32% 94%;
+    --muted-foreground: 215 16% 42%;
+    --accent: 214 60% 95%;
+    --accent-foreground: 221 77% 31%;
+    --border: 214 28% 88%;
+    --input: 214 28% 85%;
+    --ring: 221 77% 45%;
+    --radius: 0.75rem;
+    --sidebar: 222 58% 16%;
+    --sidebar-foreground: 214 40% 92%;
+    --sidebar-muted: 218 25% 66%;
+    --sidebar-active: 221 77% 45%;
+  }
+
+  .dark {
+    --background: 224 35% 8%;
+    --foreground: 214 32% 94%;
+    --card: 223 32% 12%;
+    --card-foreground: 214 32% 94%;
+    --popover: 223 32% 13%;
+    --popover-foreground: 214 32% 94%;
+    --primary: 217 85% 60%;
+    --primary-foreground: 224 50% 8%;
+    --secondary: 152 60% 42%;
+    --secondary-foreground: 0 0% 100%;
+    --success: 152 60% 42%;
+    --success-foreground: 0 0% 100%;
+    --warning: 30 92% 55%;
+    --warning-foreground: 224 50% 8%;
+    --destructive: 0 72% 58%;
+    --destructive-foreground: 0 0% 100%;
+    --muted: 223 25% 17%;
+    --muted-foreground: 215 20% 66%;
+    --accent: 221 35% 20%;
+    --accent-foreground: 214 80% 85%;
+    --border: 223 22% 21%;
+    --input: 223 22% 25%;
+    --ring: 217 85% 60%;
+    --sidebar: 225 38% 7%;
+    --sidebar-foreground: 214 32% 90%;
+    --sidebar-muted: 218 16% 58%;
+    --sidebar-active: 217 85% 55%;
+  }
+
+  * {
+    @apply border-border;
+  }
+  html,
+  body,
+  #root {
+    @apply h-full;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: 'tnum' 1, 'cv11' 1;
+    -webkit-tap-highlight-color: transparent;
+  }
+  [dir='rtl'] body {
+    font-family: 'Noto Sans Arabic', 'Segoe UI', Tahoma, system-ui, sans-serif;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+  /* Thin scrollbars for dense POS panels */
+  .scroll-thin {
+    scrollbar-width: thin;
+  }
+}
+
+@layer utilities {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  .flip-rtl {
+    @apply rtl:-scale-x-100;
+  }
+}
+
+/* Print: only the receipt/invoice area is printed */
+@media print {
+  @page {
+    margin: 0;
+  }
+  body * {
+    visibility: hidden !important;
+  }
+  .print-area,
+  .print-area * {
+    visibility: visible !important;
+  }
+  .print-area {
+    position: absolute;
+    inset: 0 auto auto 0;
+  }
+}

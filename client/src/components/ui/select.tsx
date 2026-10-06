@@ -3,7 +3,14 @@ import * as SelectPrimitive from '@radix-ui/react-select';
 import { Check, ChevronDown } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
-export const Select = SelectPrimitive.Root;
+/**
+ * Radix Select inside a <form> emits onValueChange('') when its value changes before the
+ * matching item is registered (e.g. react-hook-form reset). No item here uses '' as a value,
+ * so that spurious event is dropped instead of wiping the field.
+ */
+export function Select({ onValueChange, ...props }: React.ComponentProps<typeof SelectPrimitive.Root>) {
+  return <SelectPrimitive.Root {...props} onValueChange={onValueChange ? (v) => { if (v !== '') onValueChange(v); } : undefined} />;
+}
 export const SelectValue = SelectPrimitive.Value;
 export const SelectGroup = SelectPrimitive.Group;
 

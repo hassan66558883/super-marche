@@ -14,7 +14,7 @@ function serviceWorker(): Plugin {
       const assets = Object.keys(bundle).filter((f) => !f.endsWith('.map') && f !== 'index.html').map((f) => `/${f}`);
       const version = crypto.createHash('sha256').update(assets.sort().join()).digest('hex').slice(0, 12);
       const source = fs.readFileSync(path.resolve(__dirname, 'sw-template.js'), 'utf8')
-        .replace('__VERSION__', version).replace('__ASSETS__', JSON.stringify(assets));
+        .replace("const VERSION = '__VERSION__'", `const VERSION = '${version}'`).replace('const PRECACHE = __ASSETS__', `const PRECACHE = ${JSON.stringify(assets)}`);
       this.emitFile({ type: 'asset', fileName: 'sw.js', source });
     },
   };

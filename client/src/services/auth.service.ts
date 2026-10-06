@@ -10,8 +10,18 @@ interface AuthResult {
 let refreshing: Promise<string | null> | null = null;
 
 /** Single-flight refresh: concurrent 401s share one refresh request. */
+const callRefresh = () => request<AuthResult>('/auth/refresh', { method: 'POST', skipAuthRetry: true });
+
 export function refreshSession(): Promise<string | null> {
-  refreshing ??= request<AuthResult>('/auth/refresh', { method: 'POST', skipAuthRetry: true })
+  refreshing ??= callRefresh()
+    // Another tab rotated the refresh cookie a moment ago: retry once with the new cookie
+    .catch(async (e) => {
+      if (e instanceof ApiError && e.code === 'REFRESH_RACE') {
+        await new Promise((r) => setTimeout(r, 400));
+        return callRefresh();
+      }
+      throw e;
+    })
     .then((r) => {
       useAuthStore.getState().setSession(r.data.accessToken, r.data.user);
       return r.data.accessToken;

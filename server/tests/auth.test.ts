@@ -43,11 +43,19 @@ describe('Authentication', () => {
     expect(r1.status).toBe(200);
     const newCookie = String(r1.headers['set-cookie']?.[0]).split(';')[0];
     expect(newCookie).not.toBe(s.cookie);
-    // Replaying the old token revokes the whole session family
+    // A second tab refreshing at the same moment is told to retry, nothing is revoked
+    const race = await request(app).post('/api/auth/refresh').set('Cookie', s.cookie);
+    expect(race.status).toBe(401);
+    expect(race.body.code).toBe('REFRESH_RACE');
+    const r2 = await request(app).post('/api/auth/refresh').set('Cookie', newCookie);
+    expect(r2.status).toBe(200);
+    const latest = String(r2.headers['set-cookie']?.[0]).split(';')[0];
+    // Replaying an old token later revokes the whole session family
+    await prisma.userSession.updateMany({ where: { revokedAt: { not: null }, userId: s.userId }, data: { revokedAt: new Date(Date.now() - 60_000) } });
     const replay = await request(app).post('/api/auth/refresh').set('Cookie', s.cookie);
     expect(replay.status).toBe(401);
     expect(replay.body.code).toBe('REFRESH_TOKEN_REUSED');
-    const after = await request(app).post('/api/auth/refresh').set('Cookie', newCookie);
+    const after = await request(app).post('/api/auth/refresh').set('Cookie', latest);
     expect(after.status).toBe(401);
   });
 

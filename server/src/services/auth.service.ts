@@ -158,6 +158,11 @@ export const AuthService = {
     if (!refreshToken) throw unauthorized('Session expirée', 'NO_REFRESH_TOKEN');
     const session = await prisma.userSession.findUnique({ where: { tokenHash: sha256(refreshToken) } });
     if (!session) throw unauthorized('Session expirée', 'INVALID_REFRESH_TOKEN');
+    if (session.revokedAt && Date.now() - session.revokedAt.getTime() < 10_000) {
+      // Two tabs refreshed at the same moment: the other one already rotated the cookie.
+      // Not an attack; the caller retries with the cookie it now holds.
+      throw unauthorized('Session renouvelée, réessayez', 'REFRESH_RACE');
+    }
     if (session.revokedAt) {
       logger.warn({ userId: session.userId }, 'Refresh token reuse detected, revoking all sessions');
       await prisma.userSession.updateMany({ where: { userId: session.userId, revokedAt: null }, data: { revokedAt: new Date() } });

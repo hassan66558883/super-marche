@@ -17,6 +17,8 @@ const schema = z.object({
   REFRESH_TTL_HOURS: z.coerce.number().positive().default(12),
   REFRESH_TTL_REMEMBER_DAYS: z.coerce.number().positive().default(30),
   COOKIE_SECURE: bool.default(false),
+  /** Only for a closed LAN without HTTPS: lets production run with non-secure cookies */
+  ALLOW_INSECURE_COOKIES: bool.default(false),
   COOKIE_DOMAIN: z.string().optional().transform((v) => (v ? v : undefined)),
   LOGIN_MAX_ATTEMPTS: z.coerce.number().int().positive().default(5),
   LOGIN_LOCK_MINUTES: z.coerce.number().int().positive().default(15),
@@ -38,7 +40,14 @@ export const env = {
   isTest: parsed.data.NODE_ENV === 'test',
 };
 
-if (env.isProd && env.JWT_ACCESS_SECRET.includes('change-me')) {
-  console.error('❌ Refusing to start in production with the development JWT secret.');
+if (env.isProd && /change-me|dev-secret|example/i.test(env.JWT_ACCESS_SECRET)) {
+  console.error('❌ Refusing to start in production with a placeholder JWT secret. Generate one with: openssl rand -base64 48');
   process.exit(1);
+}
+if (env.isProd && !env.COOKIE_SECURE && !env.ALLOW_INSECURE_COOKIES) {
+  console.error('❌ COOKIE_SECURE must be true in production (serve the app over HTTPS). Set ALLOW_INSECURE_COOKIES=true only on a closed LAN.');
+  process.exit(1);
+}
+if (env.isProd && env.corsOrigins.some((o) => o.includes('localhost'))) {
+  console.warn('⚠️  CORS_ORIGINS still contains localhost in production.');
 }

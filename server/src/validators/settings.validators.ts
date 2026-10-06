@@ -7,7 +7,8 @@ export const settingSchemas: Record<string, z.ZodTypeAny> = {
     name: str(120).min(1), slogan: str().optional(), legalName: str().optional(), address: str(300).optional(),
     phone: str(60).optional(), email: z.string().email().or(z.literal('')).optional(), website: str().optional(),
     taxId: str(60).optional(), rccm: str(60).optional(), country: str(2).optional(),
-    logoUrl: z.string().url().or(z.literal('')).nullable().optional(),
+    // Shown in <img>: only web or inline image URLs
+    logoUrl: z.string().url().max(300_000).refine((u) => /^(https?:\/\/|data:image\/(png|jpeg|webp|svg\+xml);base64,)/i.test(u), 'URL de logo invalide').or(z.literal('')).nullable().optional(),
   }),
   currency: z.object({
     code: str(3).min(3), symbol: str(8).min(1), decimals: z.number().int().min(0).max(3),

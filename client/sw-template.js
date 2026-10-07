@@ -6,7 +6,7 @@ const CACHE = `technova-shell-${VERSION}`;
 const PRECACHE = __ASSETS__;
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(['/', '/logo.svg', ...PRECACHE])).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(['/', '/logo.svg', '/theme-init.js', ...PRECACHE])).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (event) => {

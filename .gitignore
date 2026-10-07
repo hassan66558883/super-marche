@@ -11,3 +11,4 @@ node_modules/.tmp/
 backups/
 test-results/
 playwright-report/
+nginx/certs/*.pem

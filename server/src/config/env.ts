@@ -40,7 +40,7 @@ export const env = {
   isTest: parsed.data.NODE_ENV === 'test',
 };
 
-if (env.isProd && /change-me|dev-secret|example/i.test(env.JWT_ACCESS_SECRET)) {
+if (env.isProd && /change[-_]?me|dev-secret|example/i.test(env.JWT_ACCESS_SECRET)) {
   console.error('❌ Refusing to start in production with a placeholder JWT secret. Generate one with: openssl rand -base64 48');
   process.exit(1);
 }
